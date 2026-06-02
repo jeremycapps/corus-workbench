@@ -1,0 +1,28 @@
+process: record-manifest
+version: 1.0.0
+
+purpose: >
+  Record the execution as an immutable process run with inputs, outputs, hashes,
+  and logs.
+
+paradigm: os
+
+signature:
+  reads:
+    - value_result
+  writes:
+    - process_run
+
+purity:
+  deterministic: false
+  side_effects: true
+  writes_files: true
+
+implementation:
+  kernel: run
+  function: record_process
+  path: kernel/run/record_process.py
+
+invariants:
+  - process_runs_are_append_only
+  - process_runs_include_input_output_hashes

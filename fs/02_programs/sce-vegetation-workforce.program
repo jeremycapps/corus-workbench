@@ -1,0 +1,64 @@
+program: sce-vegetation-workforce
+version: 1.0.0
+
+purpose: >
+  Convert a Neara-style vegetation clearance policy diff and SCE workforce
+  constraints into a customer-specific workforce/labor/money value result.
+
+bindings:
+  protocols:
+    domain: fs/01_protocols/contracts/domains/vegetation-clearance.domain
+    surface: fs/01_protocols/contracts/surfaces/policy-diff.surface
+    profile: fs/01_protocols/contracts/profiles/customer-value-architect.profile
+    value: fs/01_protocols/contracts/values/sce-vegetation-workforce.value
+
+  inputs:
+    model_output: fs/04_evidence/inputs/sce/model-output.input
+    customer_constraints: fs/04_evidence/inputs/sce/customer-constraints.input
+    timpos: fs/04_evidence/inputs/sce/vegetation-observations.timpos
+
+workflow:
+  - id: apply_domain
+    process: fs/03_processes/library/apply-domain.process
+    reads:
+      - model_output
+      - domain
+      - timpos
+    writes:
+      - clearance_context
+
+  - id: expose_surface
+    process: fs/03_processes/library/expose-surface.process
+    reads:
+      - clearance_context
+      - surface
+    writes:
+      - surface_context
+
+  - id: apply_profile
+    process: fs/03_processes/library/apply-profile.process
+    reads:
+      - surface_context
+      - profile
+    writes:
+      - profiled_context
+
+  - id: compute_value
+    process: fs/03_processes/library/compute-value.process
+    reads:
+      - profiled_context
+      - value
+      - customer_constraints
+    writes:
+      - value_result
+
+  - id: record_manifest
+    process: fs/03_processes/library/record-manifest.process
+    reads:
+      - value_result
+    writes:
+      - process_run
+
+outputs:
+  - value_result.output
+  - process_manifest.process

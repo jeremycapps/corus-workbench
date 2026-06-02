@@ -1,0 +1,15 @@
+id: malformed.surface
+domain_id: neara.sce
+version: 1.0.0
+nodes:
+  - neara.model_delta
+edges:
+  - id: edge.dangling
+    from_node: neara.model_delta
+    to_node: missing.node
+    type: connects
+    label: Dangling edge
+boundary:
+  includes:
+    - model_delta
+

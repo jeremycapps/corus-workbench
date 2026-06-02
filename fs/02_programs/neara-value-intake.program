@@ -1,0 +1,13 @@
+program: neara-value-intake
+version: 0.1.0
+
+purpose: >
+  Placeholder intake workflow for future Neara customer value evidence.
+
+bindings:
+  protocols: {}
+  inputs: {}
+
+workflow: []
+
+outputs: []

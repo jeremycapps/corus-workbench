@@ -1,0 +1,25 @@
+surface: policy-diff
+type: vegetation-clearance
+version: 1.0.0
+
+purpose: >
+  Expose what changed between two vegetation clearance policy versions.
+
+props:
+  from_policy_version: semver
+  to_policy_version: semver
+  added_watch_items: number
+  removed_items: number
+  escalated_items: number
+  unchanged_items: number
+  because: string
+  replay_hash_before: string
+  replay_hash_after: string
+
+relationships:
+  domain:
+    ref: vegetation-clearance.domain
+  value:
+    ref: sce-vegetation-workforce.value
+  profile:
+    ref: customer-value-architect.profile

@@ -1,0 +1,16 @@
+input: customer-constraints
+version: 1.0.0
+
+type: workforce_labor_money_constraints
+
+customer:
+  name: Southern California Edison
+  workflow: vegetation_management
+
+constraints:
+  crew_size: 2
+  inspection_hours_per_item: 1.5
+  items_per_crew_day: 8
+  loaded_labor_rate: 85
+  truck_roll_cost_per_day: 450
+  contractor_markup: 0.15

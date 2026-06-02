@@ -1,0 +1,38 @@
+process: compute-value
+version: 1.0.0
+
+purpose: >
+  Compute customer-specific value outputs from profiled context,
+  customer constraints, and a .value contract.
+
+paradigm: fp
+
+signature:
+  reads:
+    - profiled_context
+    - value
+    - customer_constraints
+  writes:
+    - value_result
+
+purity:
+  deterministic: true
+  side_effects: false
+  requires_network: false
+  writes_files: false
+
+implementation:
+  kernel: transform
+  function: compute_value
+  path: kernel/transform/compute_value.py
+
+invariants:
+  - same_inputs_produce_same_outputs
+  - customer_supplied_constraints_are_preserved
+  - value_outputs_include_formula_trace
+
+errors:
+  missing_customer_constraint:
+    message: Required customer constraint was not supplied.
+  invalid_value_contract:
+    message: .value contract failed validation.

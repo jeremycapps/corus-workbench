@@ -1,0 +1,38 @@
+id: vegetation_ops
+name: vegetation_ops
+core_question_pattern: reusable product/value pattern
+node_weight_rules:
+  - match: model_delta
+    weight: 5.0
+  - match: product_pattern
+    weight: 5.0
+  - match: customer_value
+    weight: 4.0
+  - match: cost_exposure
+    weight: 3.0
+  - match: operational_priority
+    weight: 2.0
+  - match: source_evidence
+    weight: 2.0
+edge_weight_rules:
+  - match: generalizes
+    weight: 5.0
+  - match: translates
+    weight: 4.0
+  - match: explains
+    weight: 4.0
+  - match: audits
+    weight: 3.0
+  - match: derives
+    weight: 3.0
+  - match: grounds
+    weight: 2.0
+  - match: constrains
+    weight: 2.0
+  - match: escalates
+    weight: 2.0
+abstraction_preference: product_pattern
+evidence_preference: source_grounded
+first_order_scoring:
+  limit: 5
+

@@ -1,0 +1,14 @@
+from: corus.agent_run
+act: generate
+type: output
+to: output.sce_grid_ops.work_packet
+inputs:
+- claim.sce.watch_points_added
+- domain.sce_vegetation
+- surface.sce_vegetation
+- profile.sce_grid_ops
+- value.sce_customer
+data:
+  proposed_action: generate_work_packet
+  permission_result: allowed
+  note: Generated output fixture for output target audit resolution.

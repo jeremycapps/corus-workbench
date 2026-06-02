@@ -1,0 +1,9 @@
+from: jeremy
+act: validate
+type: candidate_claim
+to: claim.sce.watch_points_added
+inputs:
+- claim.sce.watch_points_added
+data:
+  admissible: true
+  reason: Candidate accepted for synthetic demo path.

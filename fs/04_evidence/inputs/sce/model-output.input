@@ -1,0 +1,14 @@
+input: model-output
+version: 1.0.0
+
+type: vegetation_clearance_policy_diff
+
+data:
+  added_watch_items: 72
+  removed_items: 0
+  escalated_items: 0
+  policy_before: "3m"
+  policy_after: "5m"
+  because: >
+    72 additional vegetation points entered watch status because the clearance
+    envelope expanded from 3 meters to 5 meters.

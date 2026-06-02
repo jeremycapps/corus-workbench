@@ -1,0 +1,11 @@
+id: malformed.profile
+subject: Cody Yakimoff
+organization: Neara
+role_context: Value translation
+core_question: Can this model delta become a reusable product/value pattern?
+relation_type: person_to_thing_to_person
+value_responsibility: Translate value.
+evidence_threshold: source_grounded
+action_authority: recommend_productization_pattern
+lens_ref: missing_lens
+

@@ -1,0 +1,13 @@
+schema: value
+version: 1.0.0
+required:
+  - value
+  - version
+  - customer
+  - source_context
+  - value_question
+  - customer_constraints
+  - context_input
+  - value_calculations
+  - value_outputs
+  - value_claims

@@ -1,0 +1,59 @@
+id: bundle.sce_vegetation
+name: SCE Vegetation Demo
+timpo_sequence:
+  - 11612132757493222933514833726911676416
+  - 11612132757493222933514833726911676417
+sources:
+  - id: source.demo_model_output
+    file: artifacts/demo_model_output.json
+    kind: model_output
+claims:
+  - id: claim.sce.watch_points_added
+    source: source.demo_model_output
+    claim: The model delta produced 72 vegetation watch points.
+    value: 72
+    unit: watch_points
+    candidate_for:
+      - domain.sce.vegetation_watch_points
+  - id: claim.sce.unsupported_cost_assumption
+    source: source.demo_model_output
+    claim: SCE cost exposure is $999,999.
+validations:
+  - target: claim.sce.watch_points_added
+    admissible: true
+    reason: admissible true
+  - target: claim.sce.unsupported_cost_assumption
+    admissible: false
+    reason: admissible false
+contracts:
+  - id: domain.sce_vegetation
+    kind: domain
+    ref: contracts/sce.domain
+  - id: surface.sce_vegetation
+    kind: surface
+    ref: contracts/sce.surface
+  - id: lens.vegetation_ops
+    kind: lens
+    ref: contracts/vegetation_ops.lens
+  - id: profile.sce_grid_ops
+    kind: profile
+    ref: contracts/sce_grid_ops.profile
+  - id: profile.neara_value_architect
+    kind: profile
+    ref: contracts/neara_value_architect.profile
+  - id: value.sce_customer
+    kind: value
+    ref: contracts/sce_customer.value
+outputs:
+  - id: output.sce_grid_ops.work_packet
+    from: corus.agent_run
+    inputs:
+      - claim.sce.watch_points_added
+      - domain.sce_vegetation
+      - surface.sce_vegetation
+      - profile.sce_grid_ops
+      - value.sce_customer
+    data:
+      proposed_action: generate_work_packet
+      permission_result: allowed
+      note: Generated output fixture for output target audit resolution.

@@ -1,0 +1,9 @@
+schema: program
+version: 1.0.0
+required:
+  - program
+  - version
+  - purpose
+  - bindings
+  - workflow
+  - outputs

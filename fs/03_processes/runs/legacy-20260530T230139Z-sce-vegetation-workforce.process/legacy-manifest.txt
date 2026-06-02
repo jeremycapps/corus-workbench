@@ -1,0 +1,52 @@
+run_id: 20260530T230139Z
+started_at: '2026-05-30T23:01:39.162122+00:00'
+completed_at: '2026-05-30T23:01:39.219399+00:00'
+sources_ingested:
+- source_id: neara_sce_partnership
+  url: https://www.businesswire.com/news/home/20230927480271/en/Neara-Partners-with-Southern-California-Edison-to-Enhance-Wildfire-Risk-Mitigation
+  source_type: web
+  fetched_at: '2026-05-30T23:01:39.192477+00:00'
+  raw_path: raw/neara_sce_partnership/source.html
+  sha256: 5a2a98c0b6d7915f3c5bff214a79580058bd43fe314c36b97de3894705be80d4
+  status: stubbed
+- source_id: sce_vegetation_management
+  url: https://www.sce.com/outages-safety/wildfire-safety/wildfire-mitigation-efforts/vegetation-management
+  source_type: web
+  fetched_at: '2026-05-30T23:01:39.194921+00:00'
+  raw_path: raw/sce_vegetation_management/source.html
+  sha256: eb6a803b982539b69a1bf6ec5b0e70414cfb39fca3273594a23c8135330b04be
+  status: stubbed
+- source_id: cec_transmission_lines
+  url: https://cecgis-caenergy.opendata.arcgis.com/datasets/CAEnergy::california-electric-transmission-lines-1
+  source_type: web
+  fetched_at: '2026-05-30T23:01:39.197102+00:00'
+  raw_path: raw/cec_transmission_lines/source.html
+  sha256: 932a873eb29f58416d3d112a8253507825db319f86ee9a8bd3da4c455a0ffe5b
+  status: stubbed
+- source_id: sce_wildfire_mitigation_plan
+  url: https://www.sce.com/outages-safety/wildfire-safety/wildfire-mitigation-plan-documents
+  source_type: web
+  fetched_at: '2026-05-30T23:01:39.199191+00:00'
+  raw_path: raw/sce_wildfire_mitigation_plan/source.html
+  sha256: 753bf45eb4eee6092155b52ddd8b594344b634fdc033b1243445a97cbf5285df
+  status: stubbed
+sources_parsed:
+- source_id: neara_sce_partnership
+  content_path: parsed/neara_sce_partnership/content.md
+- source_id: sce_vegetation_management
+  content_path: parsed/sce_vegetation_management/content.md
+- source_id: cec_transmission_lines
+  content_path: parsed/cec_transmission_lines/content.md
+- source_id: sce_wildfire_mitigation_plan
+  content_path: parsed/sce_wildfire_mitigation_plan/content.md
+artifacts_generated:
+- artifacts/sce/vegetation-clearance.domain.yaml
+- artifacts/sce/policy-diff.surface.yaml
+- artifacts/sce/customer-value-architect.profile.yaml
+- artifacts/sce/sce-vegetation-workforce.value.yaml
+hashes:
+  artifacts/sce/vegetation-clearance.domain.yaml: f95045626ba8446324bfa9dd83f81ea7930b0179c3bc08cd7a6b135cba139c75
+  artifacts/sce/policy-diff.surface.yaml: b479d1b75273117dc2be0203d7cfc2a2f53449e43230679bbe53f7219a2fae33
+  artifacts/sce/customer-value-architect.profile.yaml: b2f2a3f66b276e845fecf460a03b996d4a6a1043543a38a923c3fc3836996d4a
+  artifacts/sce/sce-vegetation-workforce.value.yaml: 84a1bf091ebd5192076d87804298b7a4f58a18904f63fd397f1473902cf6d8ad
+status: success

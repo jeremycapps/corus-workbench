@@ -1,0 +1,9 @@
+from: jeremy
+act: declare
+type: contract
+to: value.sce_customer
+inputs:
+- domain.sce_vegetation
+data:
+  contract_kind: value
+  ref: sce_customer.value

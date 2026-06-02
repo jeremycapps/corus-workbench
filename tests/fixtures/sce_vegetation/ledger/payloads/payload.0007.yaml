@@ -1,0 +1,9 @@
+from: jeremy
+act: declare
+type: contract
+to: surface.sce_vegetation
+inputs:
+- domain.sce_vegetation
+data:
+  contract_kind: surface
+  ref: sce.surface

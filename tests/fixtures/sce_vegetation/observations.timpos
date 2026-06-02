@@ -1,0 +1,23 @@
+timpos: sce-vegetation-observations
+version: 1.0.0
+description: Demo batch of Timpo observation anchors for the SCE vegetation workforce value program.
+records:
+  - timpo: 11612132757493222933514833726911676416
+    when:
+      time_ns: 1700000000000000000
+    where:
+      lat_deg: 40.7127
+      lon_deg: -74.0134
+    payload:
+      ref: vegetation-point-001
+      source: demo
+  - timpo: 11612132757493222933514833726911676417
+    when:
+      time_ns: 1700000000000000001
+    where:
+      lat_deg: 40.7127
+      lon_deg: -74.0134
+    payload:
+      ref: vegetation-point-002
+      source: demo
+

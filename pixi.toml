@@ -1,0 +1,18 @@
+[workspace]
+channels = ["https://conda.modular.com/max", "conda-forge"]
+name = "corus-workbench"
+platforms = ["osx-arm64"]
+version = "0.1.0"
+
+[tasks]
+test-timpo = "mojo run -I timpo/src -I timpo/tests timpo/tests/run_all.mojo"
+test-timpo-bench = "mojo run -I timpo/src timpo/bench/timpo_rw.mojo"
+bench-timpo = "mojo run -I timpo/src timpo/bench/timpo_rw.mojo"
+test-python = "pytest"
+test = "mojo run -I timpo/src -I timpo/tests timpo/tests/run_all.mojo && mojo run -I timpo/src timpo/bench/timpo_rw.mojo && pytest"
+
+[dependencies]
+mojo = ">=1.0.0b1,<2"
+python = ">=3.11,<3.15"
+pytest = ">=8,<9"
+pyyaml = ">=6,<7"

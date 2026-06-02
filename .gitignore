@@ -1,0 +1,15 @@
+.venv/
+.pixi/
+.pycache/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+dist/
+build/
+fs/04_evidence/raw/*
+!fs/04_evidence/raw/.gitkeep
+fs/04_evidence/parsed/*
+!fs/04_evidence/parsed/.gitkeep

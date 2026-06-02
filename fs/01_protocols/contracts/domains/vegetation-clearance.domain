@@ -1,0 +1,50 @@
+domain: vegetation-clearance
+version: 1.0.0
+
+purpose: >
+  Reconstruct vegetation clearance risk from vegetation observations,
+  infrastructure geometry, and clearance policy thresholds.
+
+entities:
+  vegetation_point:
+    description: A detected vegetation point or canopy sample near electric infrastructure.
+    required_fields:
+      - vegetation_id
+      - geometry
+
+  conductor_segment:
+    description: A public or customer-provided electric line segment.
+    required_fields:
+      - segment_id
+      - geometry
+
+  clearance_event:
+    description: A reconstructed relationship between vegetation and a conductor segment.
+    derived_from:
+      - vegetation_point
+      - conductor_segment
+
+policies:
+  clearance_risk:
+    severe:
+      condition: distance_to_conductor_m < 1
+    moderate:
+      condition: distance_to_conductor_m < 3
+    watch:
+      condition: distance_to_conductor_m >= 3 and distance_to_conductor_m < 5
+    clear:
+      condition: distance_to_conductor_m >= 5
+
+reconciliation:
+  strategy: spatial_nearest
+  rules:
+    - name: nearest_segment_match
+      output: nearest_segment_id
+    - name: clearance_distance
+      output: distance_to_conductor_m
+    - name: risk_classification
+      output: risk_tier
+
+outputs:
+  - clearance_risk_context
+  - policy_diff_context

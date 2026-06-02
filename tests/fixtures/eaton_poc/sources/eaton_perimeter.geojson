@@ -1,0 +1,23 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Eaton perimeter PoC"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [-118.123, 34.191],
+            [-118.12, 34.191],
+            [-118.12, 34.194],
+            [-118.123, 34.194],
+            [-118.123, 34.191]
+          ]
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+from: jeremy
+act: declare
+type: contract
+to: domain.sce_vegetation
+inputs: []
+data:
+  contract_kind: domain
+  ref: sce.domain

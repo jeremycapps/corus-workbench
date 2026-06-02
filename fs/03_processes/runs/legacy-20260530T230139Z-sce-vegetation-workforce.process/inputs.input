@@ -1,0 +1,5 @@
+input: legacy-program-run-inputs
+version: 1.0.0
+type: legacy_preserved_inputs
+data:
+  source: legacy-manifest.yaml

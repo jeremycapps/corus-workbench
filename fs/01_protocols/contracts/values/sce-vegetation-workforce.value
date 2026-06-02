@@ -1,0 +1,136 @@
+value: sce-vegetation-workforce
+version: 1.0.0
+
+customer:
+  name: Southern California Edison
+  type: electric_utility
+  workflow: vegetation_management
+  value_sector: workforce_labor_money
+
+source_context:
+  partner: Neara
+  model_output_type: vegetation_clearance_policy_diff
+  domain: vegetation-clearance.domain
+  surface: policy-diff.surface
+  profile: customer-value-architect.profile
+
+value_question: >
+  What workforce capacity, labor hours, and budget exposure are created by
+  newly identified vegetation watch items?
+
+context_input:
+  added_watch_items:
+    value: 72
+    source: demo_model_output
+
+  removed_items:
+    value: 0
+    source: demo_model_output
+
+  escalated_items:
+    value: 0
+    source: demo_model_output
+
+  policy_delta:
+    value: "3m_to_5m"
+    source: demo_model_output
+
+  because:
+    value: >
+      72 additional vegetation points entered watch status because the clearance
+      envelope expanded from 3 meters to 5 meters.
+    source: generated_context
+
+customer_constraints:
+  crew_size:
+    value: 2
+    unit: people
+    source: demo_customer_input
+
+  inspection_hours_per_item:
+    value: 1.5
+    unit: hours
+    source: demo_customer_input
+
+  items_per_crew_day:
+    value: 8
+    unit: items_per_day
+    source: demo_customer_input
+
+  loaded_labor_rate:
+    value: 85
+    unit: USD_per_hour
+    source: demo_customer_input
+
+  truck_roll_cost_per_day:
+    value: 450
+    unit: USD_per_day
+    source: demo_customer_input
+
+  contractor_markup:
+    value: 0.15
+    unit: percentage
+    source: demo_customer_input
+
+value_calculations:
+  total_inspection_hours:
+    expression: added_watch_items * inspection_hours_per_item
+    value: 108
+
+  total_person_hours:
+    expression: total_inspection_hours * crew_size
+    value: 216
+
+  crew_days_required:
+    expression: added_watch_items / items_per_crew_day
+    value: 9
+
+  labor_cost:
+    expression: total_person_hours * loaded_labor_rate
+    value: 18360
+    unit: USD
+
+  truck_roll_cost_total:
+    expression: crew_days_required * truck_roll_cost_per_day
+    value: 4050
+    unit: USD
+
+  contractor_markup_cost:
+    expression: labor_cost * contractor_markup
+    value: 2754
+    unit: USD
+
+  total_validation_exposure:
+    expression: labor_cost + truck_roll_cost_total + contractor_markup_cost
+    value: 25164
+    unit: USD
+
+value_outputs:
+  total_inspection_hours: 108
+  total_person_hours: 216
+  crew_days_required: 9
+  labor_cost: 18360
+  truck_roll_cost_total: 4050
+  contractor_markup_cost: 2754
+  total_validation_exposure: 25164
+
+value_claims:
+  workforce:
+    claim: >
+      The 72 new watch items represent approximately 216 person-hours of
+      validation work.
+
+  budget:
+    claim: >
+      Based on demo labor and truck-roll assumptions, the policy change creates
+      approximately $25,164 in validation exposure.
+
+  planning:
+    claim: >
+      SCE can translate model output into workforce capacity before dispatching
+      field teams.
+
+  partnership:
+    claim: >
+      Neara brings what changed in the network. SCE brings what matters
+      operationally. Corus generates .value.

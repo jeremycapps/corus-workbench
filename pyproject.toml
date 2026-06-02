@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools<64", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "corus-workbench"
+version = "0.1.0"
+description = "Local-first source ingestion and artifact generation workbench for Corus."
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+  "typer",
+  "pydantic",
+  "pyyaml",
+  "httpx",
+  "beautifulsoup4",
+  "markdownify",
+  "duckdb",
+  "pandas",
+  "geopandas",
+  "shapely",
+  "pyarrow",
+  "rich",
+  "jsonschema",
+  "python-dotenv",
+]
+
+[project.scripts]
+corus = "kernel.command.cli:app"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["kernel*", "corus*"]
+
+[tool.pytest.ini_options]
+pythonpath = [".", "timpo/python"]

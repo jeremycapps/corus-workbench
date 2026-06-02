@@ -1,0 +1,8 @@
+process: legacy-program-run
+version: 1.0.0
+program: sce-vegetation-workforce
+status: preserved
+source: runs/20260530T230139Z/manifest.yaml
+note: >
+  Preserved from the exploratory first-pass workbench during the canonical
+  kernel/fs refactor.

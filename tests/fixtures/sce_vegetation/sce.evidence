@@ -1,0 +1,57 @@
+id: sce_vegetation_evidence
+type: evidence_bindings
+facts:
+  - id: fact.watch_points.added
+    source_observation: demo_model_output
+    source_observation_ids:
+      - vegetation-point-001
+      - vegetation-point-002
+    supports_domain_node: sce.vegetation_watch_points
+    claim: The model delta produced 72 vegetation watch points.
+    value: 72
+    unit: watch_points
+
+  - id: fact.clearance_policy.delta
+    source_observation: demo_model_output
+    source_observation_ids:
+      - vegetation-point-001
+      - vegetation-point-002
+    supports_domain_node: sce.clearance_policy
+    claim: The clearance interpretation changed from 3 meters to 5 meters.
+    value: 3m_to_5m
+
+  - id: fact.crew_hours.planning
+    source_observation: demo_customer_input
+    source_observation_ids:
+      - vegetation-point-001
+      - vegetation-point-002
+    supports_domain_node: sce.crew_hours
+    claim: Vegetation watch points can be translated into crew-hour planning.
+
+  - id: fact.cost.validation_exposure
+    source_observation: demo_customer_input
+    source_observation_ids:
+      - vegetation-point-001
+      - vegetation-point-002
+    supports_domain_node: sce.cost_exposure
+    claim: Validation work creates measurable budget exposure.
+    value: 25164
+    unit: dollars
+
+  - id: fact.cost.customer_value
+    source_observation: demo_customer_input
+    source_observation_ids:
+      - vegetation-point-001
+      - vegetation-point-002
+    supports_domain_node: sce.customer_value
+    claim: SCE can translate watch points into workforce and budget planning.
+    value_metric: SCE can translate watch points into workforce and budget planning.
+
+  - id: fact.neara.repeatable_pattern
+    source_observation: demo_model_output
+    source_observation_ids:
+      - vegetation-point-001
+      - vegetation-point-002
+    supports_domain_node: neara.repeatable_product_pattern
+    claim: Neara can reuse the model-delta-to-value pattern for other utility customers.
+    value_metric: Neara can reuse the model-delta-to-value pattern for other utility customers.

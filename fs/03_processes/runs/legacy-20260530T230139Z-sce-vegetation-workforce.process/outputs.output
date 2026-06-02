@@ -1,0 +1,4 @@
+output: legacy-program-run-outputs
+version: 1.0.0
+data:
+  source: legacy-manifest.yaml

@@ -1,0 +1,4 @@
+Demo placeholder for a public source PDF.
+
+The v0 intake command stores this as an artifact only. It does not parse PDFs
+or turn uploaded file contents into claims.

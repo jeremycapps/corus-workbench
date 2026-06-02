@@ -1,0 +1,18 @@
+{
+  "files.associations": {
+    "*.domain": "yaml",
+    "*.surface": "yaml",
+    "*.profile": "yaml",
+    "*.value": "yaml",
+    "*.program": "yaml",
+    "*.process": "yaml",
+    "*.protocol": "yaml",
+    "*.source": "yaml",
+    "*.input": "yaml",
+    "*.output": "yaml",
+    "*.schema": "yaml",
+    "*.hash": "yaml",
+    "*.timpos": "yaml",
+    "*.ledger": "yaml"
+  }
+}

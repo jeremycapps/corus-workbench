@@ -1,0 +1,5 @@
+schema: output
+version: 1.0.0
+required:
+  - output
+  - version

@@ -1,0 +1,13 @@
+from: corus.interpreter
+act: interpret
+type: candidate_claim
+to: claim.sce.watch_points_added
+inputs:
+- source.demo_model_output
+data:
+  claim: The model delta produced 72 vegetation watch points.
+  value: 72
+  unit: watch_points
+  status: candidate
+  candidate_for:
+  - domain.sce.vegetation_watch_points

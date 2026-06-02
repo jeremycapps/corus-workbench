@@ -1,0 +1,10 @@
+source: cec-transmission-lines
+version: 1.0.0
+
+id: cec_transmission_lines
+type: web
+url: "https://cecgis-caenergy.opendata.arcgis.com/datasets/CAEnergy::california-electric-transmission-lines-1"
+purpose: "Public California transmission-line geometry for demo network context."
+feeds:
+  - domain_context
+  - surface_context

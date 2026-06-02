@@ -1,0 +1,12 @@
+process: program-run
+version: 1.0.0
+program: sce-vegetation-workforce
+started_at: 20260601T043122848012Z
+completed_at: '2026-06-01T04:31:22.856409+00:00'
+processes:
+- apply-domain
+- expose-surface
+- apply-profile
+- compute-value
+- record-manifest
+status: success

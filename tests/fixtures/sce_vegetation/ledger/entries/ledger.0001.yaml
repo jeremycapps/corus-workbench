@@ -1,0 +1,6 @@
+id: ledger.0001
+timpo: '11612132757493222933514833726911676416'
+payload_hash: e5bd93f195603277ed843438ee3c6571ac4ba94c8a3930387a4d60b72d6448d1
+payload_ref: ledger/payloads/payload.0001.yaml
+prev_hash: null
+entry_hash: e761f30f1a4e316238e4a5be7fd91531be417b4a68db455f69be0e37387967c6

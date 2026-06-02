@@ -1,0 +1,6 @@
+schema: input
+version: 1.0.0
+required:
+  - input
+  - version
+  - type

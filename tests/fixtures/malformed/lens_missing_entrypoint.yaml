@@ -1,0 +1,11 @@
+id: malformed.lens
+name: missing_entrypoint
+core_question_pattern: missing entrypoint
+entrypoint: missing.node
+node_weight_rules:
+  - match: model_delta
+    weight: 1.0
+edge_weight_rules:
+  - match: connects
+    weight: 1.0
+

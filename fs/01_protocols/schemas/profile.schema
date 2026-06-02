@@ -1,0 +1,9 @@
+schema: profile
+version: 1.0.0
+required:
+  - profile
+  - version
+  - purpose
+  - audience
+  - information_hierarchy
+  - actions

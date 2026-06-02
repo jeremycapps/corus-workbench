@@ -1,0 +1,8 @@
+from: jeremy
+act: add
+type: artifact
+to: source.demo_model_output
+inputs: []
+data:
+  kind: demo_model_output
+  ref: observations.timpos

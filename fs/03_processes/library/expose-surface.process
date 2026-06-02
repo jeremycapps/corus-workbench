@@ -1,0 +1,27 @@
+process: expose-surface
+version: 1.0.0
+
+purpose: >
+  Apply a .surface contract to context to expose displayable context fields.
+
+paradigm: fp
+
+signature:
+  reads:
+    - clearance_context
+    - surface
+  writes:
+    - surface_context
+
+purity:
+  deterministic: true
+  side_effects: false
+
+implementation:
+  kernel: transform
+  function: expose_surface
+  path: kernel/transform/expose_surface.py
+
+invariants:
+  - surface_does_not_change_meaning
+  - surface_exposes_available_context

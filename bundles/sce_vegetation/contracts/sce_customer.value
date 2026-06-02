@@ -1,0 +1,16 @@
+id: neara.sce.customer_value
+stakeholders:
+  - SCE operations
+  - Neara product
+  - Neara customer success
+  - utility executive buyer
+  - field crew planner
+success_criteria:
+  - SCE can translate watch points into workforce and budget planning.
+  - Neara can reuse the model-delta-to-value pattern for other utility customers.
+business_consequence: The model delta can become operational value for SCE and reusable product value for Neara.
+risk_opportunity: Reduces translation friction between technical model output and customer adoption.
+why_relation: product pattern -> customer value
+action_trigger: Recommend productizing the model-delta-to-customer-value translation pattern.
+narrative: The model delta matters because it can be translated into SCE operational value and Neara product value.
+

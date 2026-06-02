@@ -1,0 +1,9 @@
+schema: process
+version: 1.0.0
+required:
+  - process
+  - version
+  - purpose
+  - signature
+  - purity
+  - implementation

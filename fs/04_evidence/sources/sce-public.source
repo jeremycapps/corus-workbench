@@ -1,0 +1,24 @@
+sources:
+  - id: neara_sce_partnership
+    type: web
+    url: "https://www.businesswire.com/news/home/20230927480271/en/Neara-Partners-with-Southern-California-Edison-to-Enhance-Wildfire-Risk-Mitigation"
+    purpose: "Public proof that Neara works with SCE on wildfire, network, and vegetation risk."
+    feeds:
+      - website
+      - value_context
+
+  - id: sce_vegetation_management
+    type: web
+    url: "https://www.sce.com/outages-safety/wildfire-safety/wildfire-mitigation-efforts/vegetation-management"
+    purpose: "SCE vegetation-management scale, inspection context, and operating frame."
+    feeds:
+      - value_context
+      - website
+
+  - id: cec_transmission_lines
+    type: web
+    url: "https://cecgis-caenergy.opendata.arcgis.com/datasets/CAEnergy::california-electric-transmission-lines-1"
+    purpose: "Public California transmission-line geometry for demo network context."
+    feeds:
+      - domain_context
+      - surface_context

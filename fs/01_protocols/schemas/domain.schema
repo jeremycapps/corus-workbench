@@ -1,0 +1,9 @@
+schema: domain
+version: 1.0.0
+required:
+  - domain
+  - version
+  - purpose
+  - entities
+  - policies
+  - outputs

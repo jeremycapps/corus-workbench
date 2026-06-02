@@ -1,0 +1,13 @@
+ledger: sce-vegetation
+version: 1.0.0
+
+description: >
+  Append-only retained observation history for the SCE vegetation demo.
+  This initial ledger is YAML-formatted for readability. Future canonical ledgers
+  may use a Mojo-backed binary/canonical format.
+
+entries:
+  - entry: ledger-entry-001
+    timpos_ref: fs/04_evidence/inputs/sce/vegetation-observations.timpos
+    retained_at: demo
+    source: demo

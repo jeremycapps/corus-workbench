@@ -1,0 +1,9 @@
+from: jeremy
+act: validate
+type: candidate_claim
+to: claim.sce.unsupported_cost_assumption
+inputs:
+- claim.sce.unsupported_cost_assumption
+data:
+  admissible: false
+  reason: No source or calculation lineage supports this claim.

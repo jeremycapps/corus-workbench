@@ -1,0 +1,9 @@
+from: corus.interpreter
+act: interpret
+type: candidate_claim
+to: claim.sce.unsupported_cost_assumption
+inputs:
+- source.demo_customer_input
+data:
+  claim: SCE cost exposure is $999,999.
+  status: candidate

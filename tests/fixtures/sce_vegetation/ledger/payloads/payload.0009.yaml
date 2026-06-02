@@ -1,0 +1,9 @@
+from: jeremy
+act: declare
+type: contract
+to: profile.sce_grid_ops
+inputs:
+- lens.vegetation_ops
+data:
+  contract_kind: profile
+  ref: sce_grid_ops.profile

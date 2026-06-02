@@ -1,0 +1,12 @@
+{
+  "timpo": 11612132757493222933514833726911676416,
+  "when": {
+    "time_ns": 1700000000000000000
+  },
+  "where": {
+    "lat_deg": 40.7127,
+    "lon_deg": -74.0134
+  },
+  "meaning": "vegetation_watch_point"
+}
+

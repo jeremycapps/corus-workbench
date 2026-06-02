@@ -1,0 +1,148 @@
+id: sce_vegetation_trust_map
+purpose: Classify the Neara value translation demo path and trust boundaries.
+product_framing: Neara tells utilities what changed in the network. Corus tells each customer why that change matters.
+classification_values:
+  - central_demo_path
+  - supporting_provenance
+  - future_upstream
+  - stale_or_misleading
+  - unclear
+trust_status_values:
+  - demo_synthetic
+  - internally_hash_backed
+  - source_labeled
+  - source_authority_missing
+  - deterministic_code_backed
+files:
+  - path: bundles/sce_vegetation/artifacts/demo_model_output.json
+    classification: central_demo_path
+    trust_status:
+      - demo_synthetic
+      - source_authority_missing
+    why: Clean Neara-style model delta/watch point output fixture.
+  - path: bundles/sce_vegetation/corus.bundle.yaml
+    classification: central_demo_path
+    trust_status:
+      - demo_synthetic
+      - internally_hash_backed
+    why: Intake wrapper declaring source, claims, validations, contracts, and demo output.
+  - path: tests/fixtures/sce_vegetation/sce.domain
+    classification: central_demo_path
+    trust_status:
+      - demo_synthetic
+    why: SCE operational meaning nodes for value translation.
+  - path: tests/fixtures/sce_vegetation/sce.surface
+    classification: central_demo_path
+    trust_status:
+      - demo_synthetic
+      - source_labeled
+      - source_authority_missing
+    why: Operational graph from model delta to customer value.
+  - path: tests/fixtures/sce_vegetation/vegetation_ops.lens
+    classification: central_demo_path
+    trust_status:
+      - demo_synthetic
+      - deterministic_code_backed
+    why: Role-specific attention over the operational graph.
+  - path: tests/fixtures/sce_vegetation/sce_grid_ops.profile
+    classification: central_demo_path
+    trust_status:
+      - demo_synthetic
+      - deterministic_code_backed
+    why: SCE role question, allowed actions, and restricted actions.
+  - path: tests/fixtures/sce_vegetation/neara_value_architect.profile
+    classification: central_demo_path
+    trust_status:
+      - demo_synthetic
+      - deterministic_code_backed
+    why: Neara value-story role question and permissions.
+  - path: tests/fixtures/sce_vegetation/sce_customer.value
+    classification: central_demo_path
+    trust_status:
+      - demo_synthetic
+      - source_authority_missing
+    why: Customer value criteria are fixture assertions, not customer-approved source facts.
+  - path: tests/fixtures/sce_vegetation/sce.evidence
+    classification: central_demo_path
+    trust_status:
+      - demo_synthetic
+      - source_labeled
+      - source_authority_missing
+    why: Operational facts have source labels but no external authority verifier.
+  - path: tests/fixtures/sce_vegetation/observations.timpos
+    classification: supporting_provenance
+    trust_status:
+      - demo_synthetic
+      - internally_hash_backed
+    why: Time/place observation anchors for demo claims.
+  - path: tests/fixtures/sce_vegetation/ledger
+    classification: supporting_provenance
+    trust_status:
+      - internally_hash_backed
+    why: Ledger entries and payloads prove internal hashes and continuity.
+  - path: kernel/connect/arcgis.py
+    classification: future_upstream
+    trust_status:
+      - source_authority_missing
+    why: Connector surface is not central to the Neara value translation demo.
+  - path: kernel/connect/geo.py
+    classification: future_upstream
+    trust_status:
+      - source_authority_missing
+    why: Raw geospatial handling is future-upstream for this demo.
+  - path: kernel/connect/laz.py
+    classification: future_upstream
+    trust_status:
+      - source_authority_missing
+    why: LiDAR/LAZ ingestion would compete with Neara framing if treated as central.
+  - path: kernel/connect/pdf.py
+    classification: future_upstream
+    trust_status:
+      - source_authority_missing
+    why: PDF extraction is not the main Neara demo path.
+  - path: tests/fixtures/eaton_poc/sources/eaton_perimeter.geojson
+    classification: future_upstream
+    trust_status:
+      - internally_hash_backed
+      - source_authority_missing
+    why: Raw GeoJSON fixture supports source provenance experiments, not the Neara demo.
+  - path: sources/eaton_fire/incident/eaton_perimeter_20250121.geojson
+    classification: future_upstream
+    trust_status:
+      - source_authority_missing
+    why: Raw incident geometry is upstream provenance work, not value translation.
+claims:
+  - id: claim.sce.watch_points_added
+    classification: central_demo_path
+    trust_status:
+      - demo_synthetic
+      - source_labeled
+      - source_authority_missing
+    why: Demo admissible claim from Neara-style model output.
+  - id: claim.sce.unsupported_cost_assumption
+    classification: central_demo_path
+    trust_status:
+      - demo_synthetic
+      - source_authority_missing
+    why: Explicitly rejected unsupported demo assumption.
+  - id: fact.watch_points.added
+    classification: central_demo_path
+    trust_status:
+      - demo_synthetic
+      - source_labeled
+      - source_authority_missing
+    why: Evidence fact tied to demo model output labels.
+  - id: fact.cost.validation_exposure
+    classification: central_demo_path
+    trust_status:
+      - demo_synthetic
+      - source_labeled
+      - source_authority_missing
+    why: Cost exposure is a business assumption for the demo.
+  - id: fact.cost.customer_value
+    classification: central_demo_path
+    trust_status:
+      - demo_synthetic
+      - source_labeled
+      - source_authority_missing
+    why: Customer value statement is not externally approved yet.

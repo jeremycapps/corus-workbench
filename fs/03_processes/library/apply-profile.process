@@ -1,0 +1,27 @@
+process: apply-profile
+version: 1.0.0
+
+purpose: >
+  Apply a .profile contract to a surface context to produce profiled context.
+
+paradigm: fp
+
+signature:
+  reads:
+    - surface_context
+    - profile
+  writes:
+    - profiled_context
+
+purity:
+  deterministic: true
+  side_effects: false
+
+implementation:
+  kernel: transform
+  function: apply_profile
+  path: kernel/transform/apply_profile.py
+
+invariants:
+  - profile_assigns_attention
+  - profile_does_not_mutate_surface_context

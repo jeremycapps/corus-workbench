@@ -1,0 +1,10 @@
+from: jeremy
+act: declare
+type: contract
+to: lens.vegetation_ops
+inputs:
+- domain.sce_vegetation
+- surface.sce_vegetation
+data:
+  contract_kind: lens
+  ref: vegetation_ops.lens

@@ -1,0 +1,31 @@
+process: apply-domain
+version: 1.0.0
+
+purpose: >
+  Apply a .domain contract to Timpos, observations, or model output to produce context.
+
+paradigm: fp
+
+signature:
+  reads:
+    - model_output
+    - domain
+    - timpos
+  writes:
+    - clearance_context
+
+purity:
+  deterministic: true
+  side_effects: false
+  requires_network: false
+  writes_files: false
+
+implementation:
+  kernel: transform
+  function: apply_domain
+  path: kernel/transform/apply_domain.py
+
+invariants:
+  - same_inputs_produce_same_outputs
+  - domain_contract_is_preserved
+  - timpo_anchors_are_preserved

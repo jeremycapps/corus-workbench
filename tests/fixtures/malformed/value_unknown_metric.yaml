@@ -1,0 +1,12 @@
+id: malformed.value
+stakeholders:
+  - SCE operations
+success_criteria:
+  - Unknown metric should fail.
+business_consequence: Unknown metric.
+risk_opportunity: Unknown metric.
+why_relation: product pattern -> customer value
+action_trigger: Recommend review.
+required_metrics:
+  - missing_metric
+

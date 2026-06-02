@@ -1,0 +1,25 @@
+protocol: legacy
+version: 1.0.0
+
+purpose: >
+  Preserve reconstruction capability through time.
+
+preserves:
+  - timpos
+  - domains
+  - context_hashes
+  - domain_diffs
+  - reconstruction_manifests
+  - process_records
+  - ledgers
+
+connects_to:
+  ledgers: fs/04_evidence/ledgers/
+  process_runs: fs/03_processes/runs/
+  verification_kernel: kernel/verify/
+
+invariants:
+  - reconstruction_inputs_remain_addressable
+  - process_records_are_append_only
+  - ledgers_preserve_observation_history
+  - hashes_allow_context_replay_checks

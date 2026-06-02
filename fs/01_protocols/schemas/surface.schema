@@ -1,0 +1,9 @@
+schema: surface
+version: 1.0.0
+required:
+  - surface
+  - type
+  - version
+  - purpose
+  - props
+  - relationships

@@ -1,0 +1,94 @@
+id: neara.sce
+version: 1.0.0
+node_types:
+  - model_delta
+  - vegetation_watch_point
+  - clearance_policy
+  - risk
+  - operational_priority
+  - crew_hours
+  - cost_exposure
+  - source_evidence
+  - customer_value
+  - product_pattern
+nodes:
+  - id: neara.model_delta
+    type: model_delta
+    label: Neara model delta
+    properties:
+      description: Expanded clearance model output creates additional watch points.
+    source_refs:
+      - demo_model_output
+    version: 1.0.0
+  - id: sce.vegetation_watch_points
+    type: vegetation_watch_point
+    label: SCE vegetation watch points
+    properties:
+      count: 72
+    source_refs:
+      - vegetation-observations.timpos
+    version: 1.0.0
+  - id: sce.clearance_policy
+    type: clearance_policy
+    label: Clearance policy
+    properties:
+      delta: 3m_to_5m
+    source_refs:
+      - sce-vegetation-management.source
+    version: 1.0.0
+  - id: sce.wildfire_risk
+    type: risk
+    label: Wildfire risk
+    properties:
+      category: public_safety
+    source_refs:
+      - sce-public.source
+    version: 1.0.0
+  - id: sce.operational_priority
+    type: operational_priority
+    label: Operational priority
+    properties:
+      priority: validate_watch_items
+    source_refs: []
+    version: 1.0.0
+  - id: sce.crew_hours
+    type: crew_hours
+    label: Crew hours
+    properties:
+      total_person_hours: 216
+    source_refs:
+      - demo_customer_input
+    version: 1.0.0
+  - id: sce.cost_exposure
+    type: cost_exposure
+    label: Cost exposure
+    properties:
+      total_validation_exposure: 25164
+      unit: USD
+    source_refs:
+      - demo_customer_input
+    version: 1.0.0
+  - id: sce.source_evidence
+    type: source_evidence
+    label: Source evidence
+    properties:
+      evidence_type: model_output_plus_customer_constraints
+    source_refs:
+      - demo_model_output
+      - demo_customer_input
+    version: 1.0.0
+  - id: sce.customer_value
+    type: customer_value
+    label: SCE customer value
+    properties:
+      value: operational planning and budget exposure
+    source_refs: []
+    version: 1.0.0
+  - id: neara.repeatable_product_pattern
+    type: product_pattern
+    label: Repeatable product pattern
+    properties:
+      pattern: model_delta_to_customer_value_translation
+    source_refs: []
+    version: 1.0.0
+

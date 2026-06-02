@@ -1,0 +1,300 @@
+input: program-run-inputs
+version: 1.0.0
+type: program_run_inputs
+data:
+  model_output:
+    input: model-output
+    version: 1.0.0
+    type: vegetation_clearance_policy_diff
+    data:
+      added_watch_items: 72
+      removed_items: 0
+      escalated_items: 0
+      policy_before: 3m
+      policy_after: 5m
+      because: '72 additional vegetation points entered watch status because the clearance
+        envelope expanded from 3 meters to 5 meters.
+
+        '
+    _path: fs/04_evidence/inputs/sce/model-output.input
+  customer_constraints:
+    input: customer-constraints
+    version: 1.0.0
+    type: workforce_labor_money_constraints
+    customer:
+      name: Southern California Edison
+      workflow: vegetation_management
+    constraints:
+      crew_size: 2
+      inspection_hours_per_item: 1.5
+      items_per_crew_day: 8
+      loaded_labor_rate: 85
+      truck_roll_cost_per_day: 450
+      contractor_markup: 0.15
+    _path: fs/04_evidence/inputs/sce/customer-constraints.input
+  timpos:
+    timpos: sce-vegetation-observations
+    version: 1.0.0
+    description: 'Demo batch of Timpo observation anchors for the SCE vegetation workforce
+      value program.
+
+      '
+    records:
+    - timpo: 11612132757493222933514833726911676416
+      when:
+        time_ns: 1700000000000000000
+      where:
+        lat_deg: 40.7127
+        lon_deg: -74.0134
+      payload:
+        ref: vegetation-point-001
+        source: demo
+    - timpo: 11612132757493222933514833726911676417
+      when:
+        time_ns: 1700000000000000001
+      where:
+        lat_deg: 40.7127
+        lon_deg: -74.0134
+      payload:
+        ref: vegetation-point-002
+        source: demo
+    _path: fs/04_evidence/inputs/sce/vegetation-observations.timpos
+  domain:
+    domain: vegetation-clearance
+    version: 1.0.0
+    purpose: 'Reconstruct vegetation clearance risk from vegetation observations,
+      infrastructure geometry, and clearance policy thresholds.
+
+      '
+    entities:
+      vegetation_point:
+        description: A detected vegetation point or canopy sample near electric infrastructure.
+        required_fields:
+        - vegetation_id
+        - geometry
+      conductor_segment:
+        description: A public or customer-provided electric line segment.
+        required_fields:
+        - segment_id
+        - geometry
+      clearance_event:
+        description: A reconstructed relationship between vegetation and a conductor
+          segment.
+        derived_from:
+        - vegetation_point
+        - conductor_segment
+    policies:
+      clearance_risk:
+        severe:
+          condition: distance_to_conductor_m < 1
+        moderate:
+          condition: distance_to_conductor_m < 3
+        watch:
+          condition: distance_to_conductor_m >= 3 and distance_to_conductor_m < 5
+        clear:
+          condition: distance_to_conductor_m >= 5
+    reconciliation:
+      strategy: spatial_nearest
+      rules:
+      - name: nearest_segment_match
+        output: nearest_segment_id
+      - name: clearance_distance
+        output: distance_to_conductor_m
+      - name: risk_classification
+        output: risk_tier
+    outputs:
+    - clearance_risk_context
+    - policy_diff_context
+    _path: fs/01_protocols/contracts/domains/vegetation-clearance.domain
+  surface:
+    surface: policy-diff
+    type: vegetation-clearance
+    version: 1.0.0
+    purpose: 'Expose what changed between two vegetation clearance policy versions.
+
+      '
+    props:
+      from_policy_version: semver
+      to_policy_version: semver
+      added_watch_items: number
+      removed_items: number
+      escalated_items: number
+      unchanged_items: number
+      because: string
+      replay_hash_before: string
+      replay_hash_after: string
+    relationships:
+      domain:
+        ref: vegetation-clearance.domain
+      value:
+        ref: sce-vegetation-workforce.value
+      profile:
+        ref: customer-value-architect.profile
+    _path: fs/01_protocols/contracts/surfaces/policy-diff.surface
+  profile:
+    profile: customer-value-architect
+    version: 1.0.0
+    purpose: 'Help a Customer Value Architect translate a model output into customer-specific
+      workforce, labor, and money value.
+
+      '
+    audience:
+      role: Customer Value Architect
+      organization: Neara
+      customer: Southern California Edison
+    primary_question: 'How do I turn this model output into customer adoption, value
+      validation, and measurable operating impact?
+
+      '
+    information_hierarchy:
+      hero:
+      - prop: value_outputs.total_validation_exposure
+        component: kpi_card
+        priority: 1
+      - prop: value_outputs.total_person_hours
+        component: kpi_card
+        priority: 2
+      - prop: value_outputs.crew_days_required
+        component: kpi_card
+        priority: 3
+      - prop: context_input.added_watch_items
+        component: kpi_card
+        priority: 4
+      relational:
+      - prop: source_context.domain
+        component: breadcrumbs
+      - prop: source_context.surface
+        component: breadcrumbs
+      collection:
+      - prop: customer_constraints
+        component: data_table
+      - prop: value_calculations
+        component: data_table
+      granular:
+      - prop: context_input.because
+        component: description_list
+    actions:
+      primary:
+      - generate_value_summary
+      - export_customer_packet
+      - compare_assumptions
+      - update_value_constraints
+    _path: fs/01_protocols/contracts/profiles/customer-value-architect.profile
+  value:
+    value: sce-vegetation-workforce
+    version: 1.0.0
+    customer:
+      name: Southern California Edison
+      type: electric_utility
+      workflow: vegetation_management
+      value_sector: workforce_labor_money
+    source_context:
+      partner: Neara
+      model_output_type: vegetation_clearance_policy_diff
+      domain: vegetation-clearance.domain
+      surface: policy-diff.surface
+      profile: customer-value-architect.profile
+    value_question: 'What workforce capacity, labor hours, and budget exposure are
+      created by newly identified vegetation watch items?
+
+      '
+    context_input:
+      added_watch_items:
+        value: 72
+        source: demo_model_output
+      removed_items:
+        value: 0
+        source: demo_model_output
+      escalated_items:
+        value: 0
+        source: demo_model_output
+      policy_delta:
+        value: 3m_to_5m
+        source: demo_model_output
+      because:
+        value: '72 additional vegetation points entered watch status because the clearance
+          envelope expanded from 3 meters to 5 meters.
+
+          '
+        source: generated_context
+    customer_constraints:
+      crew_size:
+        value: 2
+        unit: people
+        source: demo_customer_input
+      inspection_hours_per_item:
+        value: 1.5
+        unit: hours
+        source: demo_customer_input
+      items_per_crew_day:
+        value: 8
+        unit: items_per_day
+        source: demo_customer_input
+      loaded_labor_rate:
+        value: 85
+        unit: USD_per_hour
+        source: demo_customer_input
+      truck_roll_cost_per_day:
+        value: 450
+        unit: USD_per_day
+        source: demo_customer_input
+      contractor_markup:
+        value: 0.15
+        unit: percentage
+        source: demo_customer_input
+    value_calculations:
+      total_inspection_hours:
+        expression: added_watch_items * inspection_hours_per_item
+        value: 108
+      total_person_hours:
+        expression: total_inspection_hours * crew_size
+        value: 216
+      crew_days_required:
+        expression: added_watch_items / items_per_crew_day
+        value: 9
+      labor_cost:
+        expression: total_person_hours * loaded_labor_rate
+        value: 18360
+        unit: USD
+      truck_roll_cost_total:
+        expression: crew_days_required * truck_roll_cost_per_day
+        value: 4050
+        unit: USD
+      contractor_markup_cost:
+        expression: labor_cost * contractor_markup
+        value: 2754
+        unit: USD
+      total_validation_exposure:
+        expression: labor_cost + truck_roll_cost_total + contractor_markup_cost
+        value: 25164
+        unit: USD
+    value_outputs:
+      total_inspection_hours: 108
+      total_person_hours: 216
+      crew_days_required: 9
+      labor_cost: 18360
+      truck_roll_cost_total: 4050
+      contractor_markup_cost: 2754
+      total_validation_exposure: 25164
+    value_claims:
+      workforce:
+        claim: 'The 72 new watch items represent approximately 216 person-hours of
+          validation work.
+
+          '
+      budget:
+        claim: 'Based on demo labor and truck-roll assumptions, the policy change
+          creates approximately $25,164 in validation exposure.
+
+          '
+      planning:
+        claim: 'SCE can translate model output into workforce capacity before dispatching
+          field teams.
+
+          '
+      partnership:
+        claim: 'Neara brings what changed in the network. SCE brings what matters
+          operationally. Corus generates .value.
+
+          '
+    _path: fs/01_protocols/contracts/values/sce-vegetation-workforce.value

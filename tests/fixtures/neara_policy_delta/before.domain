@@ -1,0 +1,32 @@
+id: neara.sce
+version: 1.0.0
+node_types:
+  - model_delta
+  - clearance_policy
+  - customer_value
+nodes:
+  - id: neara.model_delta
+    type: model_delta
+    label: Neara model delta
+    properties:
+      description: Clearance model output before policy expansion.
+    source_refs:
+      - demo_model_output_before
+    version: 1.0.0
+  - id: sce.clearance_policy
+    type: clearance_policy
+    label: Clearance policy
+    properties:
+      delta: 3m_policy
+      watch_distance_m: 3
+    source_refs:
+      - sce-vegetation-management.source
+    version: 1.0.0
+  - id: sce.customer_value
+    type: customer_value
+    label: SCE customer value
+    properties:
+      value: baseline planning exposure
+    source_refs: []
+    version: 1.0.0
+

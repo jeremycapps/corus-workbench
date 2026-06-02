@@ -1,0 +1,101 @@
+id: neara.sce.value_translation
+domain_id: neara.sce
+version: 1.0.0
+nodes:
+  - neara.model_delta
+  - sce.vegetation_watch_points
+  - sce.clearance_policy
+  - sce.wildfire_risk
+  - sce.operational_priority
+  - sce.crew_hours
+  - sce.cost_exposure
+  - sce.source_evidence
+  - sce.customer_value
+  - neara.repeatable_product_pattern
+edges:
+  - id: edge.model_delta.policy
+    from_node: neara.model_delta
+    to_node: sce.clearance_policy
+    type: derives
+    label: Model delta derives clearance policy change.
+    weight_base: 1.0
+    properties: {}
+    source_refs:
+      - demo_model_output
+  - id: edge.policy.watch_points
+    from_node: sce.clearance_policy
+    to_node: sce.vegetation_watch_points
+    type: constrains
+    label: Policy constrains vegetation watch classification.
+    weight_base: 1.0
+    properties: {}
+    source_refs:
+      - vegetation-observations.timpos
+  - id: edge.watch_points.risk
+    from_node: sce.vegetation_watch_points
+    to_node: sce.wildfire_risk
+    type: grounds
+    label: Watch points ground wildfire risk.
+    weight_base: 1.0
+    properties: {}
+    source_refs: []
+  - id: edge.risk.priority
+    from_node: sce.wildfire_risk
+    to_node: sce.operational_priority
+    type: escalates
+    label: Wildfire risk escalates operational priority.
+    weight_base: 1.0
+    properties: {}
+    source_refs: []
+  - id: edge.priority.crew_hours
+    from_node: sce.operational_priority
+    to_node: sce.crew_hours
+    type: translates
+    label: Operational priority translates into crew hours.
+    weight_base: 1.0
+    properties: {}
+    source_refs:
+      - demo_customer_input
+  - id: edge.crew_hours.cost
+    from_node: sce.crew_hours
+    to_node: sce.cost_exposure
+    type: translates
+    label: Crew hours translate into cost exposure.
+    weight_base: 1.0
+    properties: {}
+    source_refs:
+      - demo_customer_input
+  - id: edge.cost.customer_value
+    from_node: sce.cost_exposure
+    to_node: sce.customer_value
+    type: explains
+    label: Cost exposure explains customer value.
+    weight_base: 1.0
+    properties: {}
+    source_refs: []
+  - id: edge.customer_value.product_pattern
+    from_node: sce.customer_value
+    to_node: neara.repeatable_product_pattern
+    type: generalizes
+    label: Customer value generalizes into a repeatable product pattern.
+    weight_base: 1.0
+    properties: {}
+    source_refs: []
+  - id: edge.evidence.model_delta
+    from_node: sce.source_evidence
+    to_node: neara.model_delta
+    type: audits
+    label: Source evidence audits the model delta.
+    weight_base: 1.0
+    properties: {}
+    source_refs:
+      - demo_model_output
+boundary:
+  includes:
+    - model_delta
+    - customer_value
+    - product_pattern
+  excludes:
+    - identity
+    - full_ui_layout
+

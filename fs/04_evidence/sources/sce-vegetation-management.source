@@ -1,0 +1,10 @@
+source: sce-vegetation-management
+version: 1.0.0
+
+id: sce_vegetation_management
+type: web
+url: "https://www.sce.com/outages-safety/wildfire-safety/wildfire-mitigation-efforts/vegetation-management"
+purpose: "SCE vegetation-management scale, inspection context, and operating frame."
+feeds:
+  - value_context
+  - website

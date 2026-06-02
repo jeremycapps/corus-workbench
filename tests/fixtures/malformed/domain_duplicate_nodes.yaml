@@ -1,0 +1,12 @@
+id: malformed.domain
+version: 1.0.0
+node_types:
+  - asset
+nodes:
+  - id: duplicate.node
+    type: asset
+    label: First
+  - id: duplicate.node
+    type: asset
+    label: Second
+

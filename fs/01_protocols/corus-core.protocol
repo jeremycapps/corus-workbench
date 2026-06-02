@@ -1,0 +1,30 @@
+protocol: corus-core
+version: 1.0.0
+
+purpose: >
+  Define the durable Corus context OS contract layer.
+
+phrases:
+  - Process = transform.
+  - Program = runtime.
+  - Protocol = contract.
+
+semantic_extensions:
+  - .domain
+  - .surface
+  - .profile
+  - .value
+  - .program
+  - .process
+  - .protocol
+  - .source
+  - .input
+  - .output
+  - .schema
+  - .hash
+
+invariants:
+  - kernel_executes
+  - fs_preserves_context
+  - semantic_extensions_are_yaml_formatted
+  - protocols_are_immutable_contracts

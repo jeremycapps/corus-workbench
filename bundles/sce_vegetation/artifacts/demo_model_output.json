@@ -1,0 +1,5 @@
+{
+  "model_delta": "vegetation_watch_points",
+  "watch_points": 72,
+  "note": "Demo source artifact. Claims are declared in corus.bundle.yaml, not extracted automatically."
+}

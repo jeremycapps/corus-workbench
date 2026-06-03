@@ -1,0 +1,6 @@
+hash: program-run-hashes
+version: 1.0.0
+sha256:
+  manifest.process: e389e999de431f93854806bd05aca1f8bfd8b87cdc33b8979e7cbe51559cacac
+  inputs.input: b28c5185f18ce0eb7352a0b6ba9089d03efd817e98a676f59ce05d3aa9735d29
+  outputs.output: 860f94df6c357cc9dd07d6150b21bdd87c63c3db460e71ec458e4a889ec22f8b

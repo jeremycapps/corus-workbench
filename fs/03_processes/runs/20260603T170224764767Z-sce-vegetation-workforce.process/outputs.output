@@ -1,0 +1,111 @@
+output: program-run-outputs
+version: 1.0.0
+data:
+  clearance_context:
+    context: clearance_context
+    domain: vegetation-clearance
+    timpos:
+      ref: fs/04_evidence/inputs/sce/vegetation-observations.timpos
+      count: 2
+    policy_diff:
+      from_policy_version: 3m
+      to_policy_version: 5m
+      added_watch_items: 72
+      removed_items: 0
+      escalated_items: 0
+      because: '72 additional vegetation points entered watch status because the clearance
+        envelope expanded from 3 meters to 5 meters.
+
+        '
+    domain_outputs:
+    - clearance_risk_context
+    - policy_diff_context
+  surface_context: &id001
+    context: surface_context
+    surface: policy-diff
+    props:
+      from_policy_version: 3m
+      to_policy_version: 5m
+      added_watch_items: 72
+      removed_items: 0
+      escalated_items: 0
+      because: '72 additional vegetation points entered watch status because the clearance
+        envelope expanded from 3 meters to 5 meters.
+
+        '
+    relationships:
+      domain:
+        ref: vegetation-clearance.domain
+      value:
+        ref: sce-vegetation-workforce.value
+      profile:
+        ref: customer-value-architect.profile
+  profiled_context:
+    context: profiled_context
+    surface_context: *id001
+    profile: customer-value-architect
+    audience:
+      role: Customer Value Architect
+      organization: Neara
+      customer: Southern California Edison
+    information_hierarchy:
+      hero:
+      - prop: value_outputs.total_validation_exposure
+        component: kpi_card
+        priority: 1
+      - prop: value_outputs.total_person_hours
+        component: kpi_card
+        priority: 2
+      - prop: value_outputs.crew_days_required
+        component: kpi_card
+        priority: 3
+      - prop: context_input.added_watch_items
+        component: kpi_card
+        priority: 4
+      relational:
+      - prop: source_context.domain
+        component: breadcrumbs
+      - prop: source_context.surface
+        component: breadcrumbs
+      collection:
+      - prop: customer_constraints
+        component: data_table
+      - prop: value_calculations
+        component: data_table
+      granular:
+      - prop: context_input.because
+        component: description_list
+    actions:
+      primary:
+      - generate_value_summary
+      - export_customer_packet
+      - compare_assumptions
+      - update_value_constraints
+  value_result:
+    output: value_result
+    version: 1.0.0
+    customer:
+      name: Southern California Edison
+      type: electric_utility
+      workflow: vegetation_management
+      value_sector: workforce_labor_money
+    value_question: 'What workforce capacity, labor hours, and budget exposure are
+      created by newly identified vegetation watch items?
+
+      '
+    value_outputs:
+      total_inspection_hours: 108
+      total_person_hours: 216
+      crew_days_required: 9
+      labor_cost: 18360
+      truck_roll_cost_total: 4050
+      contractor_markup_cost: 2754
+      total_validation_exposure: 25164
+    formula_trace:
+      total_inspection_hours: added_watch_items * inspection_hours_per_item
+      total_person_hours: total_inspection_hours * crew_size
+      crew_days_required: added_watch_items / items_per_crew_day
+      labor_cost: total_person_hours * loaded_labor_rate
+      truck_roll_cost_total: crew_days_required * truck_roll_cost_per_day
+      contractor_markup_cost: labor_cost * contractor_markup
+      total_validation_exposure: labor_cost + truck_roll_cost_total + contractor_markup_cost

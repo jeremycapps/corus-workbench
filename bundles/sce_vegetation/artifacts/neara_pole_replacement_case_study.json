@@ -1,0 +1,17 @@
+{
+  "id": "source.neara_pole_replacement_case_study",
+  "kind": "proof_pattern",
+  "authority": "public_neara_case_study",
+  "source_status": "public_web_page",
+  "url": "https://neara.com/resources/case-studies/case-study-utility-defers-25k-pole-replacements/",
+  "accessed_on": "2026-06-03",
+  "supports": [
+    "Neara publicly describes a utility case where physics-based analysis reduced projected pole replacements.",
+    "The case study frames evidence as useful for regulator-facing justification.",
+    "The case study supports the demo pattern of translating technical analysis into defensible investment decisions."
+  ],
+  "limits": [
+    "The case study is not identified as SCE.",
+    "The case study does not validate any demo-specific budget number."
+  ]
+}

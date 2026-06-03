@@ -1,59 +1,134 @@
 id: bundle.sce_vegetation
 name: SCE Vegetation Demo
 timpo_sequence:
-  - 11612132757493222933514833726911676416
-  - 11612132757493222933514833726911676417
+- 11612132757493222933514833726911676416
+- 11612132757493222933514833726911676417
+source_context:
+  demo_frame: RVO-style customer implementation context trace
+  status: Public-source grounded scenario; not an official Neara export or SCE operating model.
+  customer_implementation_pain: Broad risk and grid-model intelligence must be translated into customer-specific workstreams, stakeholder questions, evidence requirements, and defensible next actions.
+  primary_source_ids:
+  - source.neara_risk_impact_scoring
+  - source.neara_risk_prioritization_case_study
+  - source.neara_pole_replacement_case_study
+  - source.sce_2025_wmp_update
+  bounded_claims:
+  - Neara publicly frames RVO as risk likelihood, consequence, cost-benefit, intervention selection, and decision justification.
+  - Neara public case studies show adjacent proof patterns around risk prioritization, SAIDI reduction, capital planning, and pole replacement deferral.
+  - SCE public wildfire mitigation materials show refreshed risk-model outputs affecting inspections, vegetation management scope, and system-hardening scoping/schedules.
+  - The demo remains synthetic where it asserts a specific Neara-style model output count or cost amount.
 sources:
-  - id: source.demo_model_output
-    file: artifacts/demo_model_output.json
-    kind: model_output
+- id: source.demo_model_output
+  file: artifacts/demo_model_output.json
+  kind: model_output
+  authority: demo_synthetic
+  source_status: synthetic_internal_fixture
+  trust_status:
+  - demo_synthetic
+  - source_authority_missing
+  trust_note: Synthetic Neara-style fixture used to exercise Corus admission, translation, validation, and audit behavior.
+- id: source.neara_risk_impact_scoring
+  file: artifacts/neara_risk_impact_scoring.json
+  kind: product_context
+  authority: public_neara_marketing
+  source_status: public_web_page
+  url: https://neara.com/capabilities/risk-impact-scoring
+  trust_status:
+  - source_labeled
+  - public_source
+  trust_note: Frames Neara RVO as decision validation, risk likelihood/consequence/cost, intervention selection, and cost-benefit analysis.
+- id: source.neara_risk_prioritization_case_study
+  file: artifacts/neara_risk_prioritization_case_study.json
+  kind: proof_pattern
+  authority: public_neara_case_study
+  source_status: public_web_page
+  url: https://neara.com/resources/case-studies/risk-prioritization-reducing-saidi/
+  trust_status:
+  - source_labeled
+  - public_source
+  trust_note: Shows a public Neara proof pattern for risk prioritization, shared risk views, capital planning, and projected SAIDI reduction.
+- id: source.neara_pole_replacement_case_study
+  file: artifacts/neara_pole_replacement_case_study.json
+  kind: proof_pattern
+  authority: public_neara_case_study
+  source_status: public_web_page
+  url: https://neara.com/resources/case-studies/case-study-utility-defers-25k-pole-replacements/
+  trust_status:
+  - source_labeled
+  - public_source
+  trust_note: Shows a public Neara proof pattern for using physics-based analysis and evidence to justify replacement decisions to regulators.
+- id: source.sce_2025_wmp_update
+  file: artifacts/sce_2025_wmp_update_public_filing.json
+  kind: customer_operating_context
+  authority: public_sce_regulatory_filing
+  source_status: public_pdf
+  url: https://www.sce.com/sites/default/files/AEM/Wildfire%20Mitigation%20Plan/2023-2025/SCE%202025%20WMP%20Update%20R1.pdf
+  trust_status:
+  - source_labeled
+  - public_source
+  trust_note: 'Grounds the customer-side implementation problem: refreshed risk-model outputs affect inspection strategy, vegetation management scope, and system-hardening scoping/schedules.'
 claims:
-  - id: claim.sce.watch_points_added
-    source: source.demo_model_output
-    claim: The model delta produced 72 vegetation watch points.
-    value: 72
-    unit: watch_points
-    candidate_for:
-      - domain.sce.vegetation_watch_points
-  - id: claim.sce.unsupported_cost_assumption
-    source: source.demo_model_output
-    claim: SCE cost exposure is $999,999.
+- id: claim.sce.watch_points_added
+  source: source.demo_model_output
+  context_sources:
+  - source.neara_risk_impact_scoring
+  - source.sce_2025_wmp_update
+  claim: The model delta produced 72 vegetation watch points.
+  value: 72
+  unit: watch_points
+  candidate_for:
+  - domain.sce.vegetation_watch_points
+  trust_status:
+  - demo_synthetic
+  - source_authority_missing
+  trust_note: Count comes from synthetic fixture; public sources only ground the surrounding RVO-style implementation context.
+- id: claim.sce.unsupported_cost_assumption
+  source: source.demo_model_output
+  context_sources:
+  - source.neara_risk_impact_scoring
+  - source.neara_pole_replacement_case_study
+  claim: SCE cost exposure is $999,999.
+  trust_status:
+  - demo_synthetic
+  - source_authority_missing
+  - rejected_assumption
+  trust_note: Specific cost amount is intentionally unsupported and should be rejected unless a customer-approved cost model is supplied.
 validations:
-  - target: claim.sce.watch_points_added
-    admissible: true
-    reason: admissible true
-  - target: claim.sce.unsupported_cost_assumption
-    admissible: false
-    reason: admissible false
+- target: claim.sce.watch_points_added
+  admissible: true
+  reason: admissible true
+- target: claim.sce.unsupported_cost_assumption
+  admissible: false
+  reason: admissible false
 contracts:
-  - id: domain.sce_vegetation
-    kind: domain
-    ref: contracts/sce.domain
-  - id: surface.sce_vegetation
-    kind: surface
-    ref: contracts/sce.surface
-  - id: lens.vegetation_ops
-    kind: lens
-    ref: contracts/vegetation_ops.lens
-  - id: profile.sce_grid_ops
-    kind: profile
-    ref: contracts/sce_grid_ops.profile
-  - id: profile.neara_value_architect
-    kind: profile
-    ref: contracts/neara_value_architect.profile
-  - id: value.sce_customer
-    kind: value
-    ref: contracts/sce_customer.value
+- id: domain.sce_vegetation
+  kind: domain
+  ref: contracts/sce.domain
+- id: surface.sce_vegetation
+  kind: surface
+  ref: contracts/sce.surface
+- id: lens.vegetation_ops
+  kind: lens
+  ref: contracts/vegetation_ops.lens
+- id: profile.sce_grid_ops
+  kind: profile
+  ref: contracts/sce_grid_ops.profile
+- id: profile.neara_value_architect
+  kind: profile
+  ref: contracts/neara_value_architect.profile
+- id: value.sce_customer
+  kind: value
+  ref: contracts/sce_customer.value
 outputs:
-  - id: output.sce_grid_ops.work_packet
-    from: corus.agent_run
-    inputs:
-      - claim.sce.watch_points_added
-      - domain.sce_vegetation
-      - surface.sce_vegetation
-      - profile.sce_grid_ops
-      - value.sce_customer
-    data:
-      proposed_action: generate_work_packet
-      permission_result: allowed
-      note: Generated output fixture for output target audit resolution.
+- id: output.sce_grid_ops.work_packet
+  from: corus.agent_run
+  inputs:
+  - claim.sce.watch_points_added
+  - domain.sce_vegetation
+  - surface.sce_vegetation
+  - profile.sce_grid_ops
+  - value.sce_customer
+  data:
+    proposed_action: generate_work_packet
+    permission_result: allowed
+    note: Generated output fixture for output target audit resolution.

@@ -1,0 +1,17 @@
+{
+  "id": "source.neara_risk_prioritization_case_study",
+  "kind": "proof_pattern",
+  "authority": "public_neara_case_study",
+  "source_status": "public_web_page",
+  "url": "https://neara.com/resources/case-studies/risk-prioritization-reducing-saidi/",
+  "accessed_on": "2026-06-03",
+  "supports": [
+    "Neara publicly describes a US utility risk-prioritization case study with projected SAIDI reduction.",
+    "The case study frames risk prioritization as unifying GIS, LiDAR, inspection, and vegetation data into a defensible model.",
+    "The case study connects risk scoring to capital planning, planning confidence, and system-wide decision-making."
+  ],
+  "limits": [
+    "The case study is not identified as SCE.",
+    "The case study does not validate the demo's synthetic watch-point count."
+  ]
+}

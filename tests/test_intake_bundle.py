@@ -20,7 +20,7 @@ def test_ingest_creates_ledger(tmp_path: Path) -> None:
 
     assert (run_dir / "ledger" / "entries").exists()
     assert (run_dir / "ledger" / "payloads").exists()
-    assert len(store.read_entries()) == 12
+    assert len(store.read_entries()) == 16
     assert store.verify_chain()["valid"] is True
 
 
@@ -56,6 +56,8 @@ def test_cli_ingest_summary(tmp_path: Path) -> None:
     assert "Ledger" in output
     assert "valid: true" in output
     assert "source.demo_model_output was added" in output
+    assert "source.sce_2025_wmp_update was added" in output
+    assert "source.neara_risk_impact_scoring was added" in output
     assert "claim.sce.watch_points_added was interpreted" in output
     assert "claim.sce.watch_points_added was validated" in output
     assert "claim.sce.unsupported_cost_assumption was rejected" in output
@@ -75,7 +77,7 @@ def test_cli_ingest_json_summary(tmp_path: Path) -> None:
 
     assert result["bundle_id"] == "bundle.sce_vegetation"
     assert result["ledger"]["valid"] is True
-    assert result["entries_written"] == 12
+    assert result["entries_written"] == 16
     assert result["written_payloads"]
 
 

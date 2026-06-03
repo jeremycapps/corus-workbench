@@ -1,0 +1,34 @@
+{
+  "id": "source.sce_2025_wmp_update",
+  "kind": "customer_operating_context",
+  "authority": "public_sce_regulatory_filing",
+  "source_status": "public_pdf",
+  "url": "https://www.sce.com/sites/default/files/AEM/Wildfire%20Mitigation%20Plan/2023-2025/SCE%202025%20WMP%20Update%20R1.pdf",
+  "accessed_on": "2026-06-03",
+  "supports": [
+    "SCE describes significant wildfire-risk-model updates and top-risk circuit/segment reporting.",
+    "SCE states that timing and method of integrating new risk-model information depends on the type of mitigation work.",
+    "SCE states that POI and consequence risk-model outputs were used to reprioritize some vegetation management scope.",
+    "SCE states that hardening mitigations such as covered conductor and targeted undergrounding typically have lag because scoping, design, release, and construction take time.",
+    "SCE states new risk-model output is integrated into hardening scoping schedules and future scope."
+  ],
+  "page_refs": [
+    {
+      "page": 25,
+      "topic": "Risk-model information affects mitigation work differently by workstream."
+    },
+    {
+      "page": 25,
+      "topic": "Vegetation management scope reprioritization from POI and consequence outputs."
+    },
+    {
+      "page": 25,
+      "topic": "System hardening lag and scoping schedule integration."
+    }
+  ],
+  "limits": [
+    "This public filing does not claim Neara generated SCE's risk-model outputs.",
+    "This public filing does not validate the demo's synthetic 72-watch-point count.",
+    "This public filing does not validate a specific SCE dollar exposure for the demo."
+  ]
+}

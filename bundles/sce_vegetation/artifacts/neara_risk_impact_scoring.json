@@ -1,0 +1,17 @@
+{
+  "id": "source.neara_risk_impact_scoring",
+  "kind": "product_context",
+  "authority": "public_neara_marketing",
+  "source_status": "public_web_page",
+  "url": "https://neara.com/capabilities/risk-impact-scoring",
+  "accessed_on": "2026-06-03",
+  "supports": [
+    "Neara publicly frames Risk Value Optimization as validating decisions and gathering context for risk mitigation or asset upgrade decisions.",
+    "Neara describes risk evaluation through likelihood, consequence, and cost.",
+    "Neara describes cost-benefit analysis and intervention selection as part of RVO."
+  ],
+  "limits": [
+    "This page does not prove any official Neara output exists for the demo.",
+    "This page does not validate the synthetic 72-watch-point count or any SCE-specific cost exposure."
+  ]
+}

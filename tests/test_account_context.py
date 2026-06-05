@@ -51,14 +51,22 @@ def test_surface_is_director_owned() -> None:
 def test_resolution_state_marks_alignment_not_adoption() -> None:
     result = resolve_account_context(FIXTURE)
 
-    assert "aligned delivery context" in result["answer"]
+    assert "unblock an account-context graph" in result["answer"]
     assert "adoption-ready" not in result["answer"]
     assert result["state"] == {
-        "neara_alignment": "ready",
+        "account_context_model": "ready",
+        "mandates": "unblocked",
+        "neara_alignment": "unresolved",
         "customer_adoption": "unresolved",
-        "reason": "customer-side acceptance nodes are not represented",
+        "reason": (
+            "RVO context unblocks CVA, FDE, and Director mandates, but value evidence, technical evidence, "
+            "and delivery alignment artifacts have not yet been contributed."
+        ),
     }
     assert result["unresolved"] == [
+        "missing.contributed_artifact.value_evidence",
+        "missing.contributed_artifact.technical_evidence",
+        "missing.contributed_artifact.delivery_alignment",
         "missing.customer_sponsor_acceptance",
         "missing.customer_technical_acceptance",
         "missing.customer_user_workflow",
@@ -92,25 +100,23 @@ def test_alignment_readiness_is_explained_by_events_and_transitions() -> None:
     assert [event["claim"] for event in result["events"]] == [
         "Director initiates the account-context question.",
         "RVO context enters the Neara account team.",
-        "CVA contributes value evidence.",
-        "FDE contributes technical evidence.",
-        "Director owns the account surface.",
-        "Corus resolves delivery alignment.",
+        "CVA value-translation mandate is unblocked.",
+        "FDE technical-implementation mandate is unblocked.",
+        "Director account-coherence mandate is unblocked.",
+        "Expected artifacts are identified.",
     ]
     assert result["events"][-1] == {
-        "id": "event.delivery_alignment_resolved",
-        "claim": "Corus resolves delivery alignment.",
+        "id": "event.expected_artifacts_identified",
+        "claim": "Expected artifacts are identified.",
         "caused_by": [
-            "artifact.value_evidence",
-            "artifact.technical_evidence",
-            "relation.director.account_coherence",
+            "contract.value_translation",
+            "contract.technical_implementation",
+            "contract.account_coherence",
         ],
-        "produces_state": "neara_alignment.ready",
+        "produces_state": "account_context_model.ready",
         "lineage": [
             "artifact.value_evidence",
             "artifact.technical_evidence",
-            "surface.account_context",
-            "relation.director.account_coherence",
             "artifact.delivery_alignment",
         ],
     }
@@ -118,15 +124,19 @@ def test_alignment_readiness_is_explained_by_events_and_transitions() -> None:
     assert result["state_transitions"][0]["to"] == "alignment.question_initiated"
     assert result["state_transitions"][1]["from"] == "alignment.question_initiated"
     assert result["state_transitions"][1]["to"] == "alignment.context_available"
-    assert result["state_transitions"][-1]["to"] == "neara_alignment.ready"
+    assert result["state_transitions"][-1]["to"] == "account_context_model.ready"
+    assert "event.delivery_alignment_resolved" not in {event["id"] for event in result["events"]}
+    assert "neara_alignment.ready" not in {transition["to"] for transition in result["state_transitions"]}
     assert result["state"]["customer_adoption"] == "unresolved"
 
 
 def test_answer_is_initiator_aware_without_claiming_customer_adoption() -> None:
     result = resolve_account_context(FIXTURE)
 
-    assert "Director" in result["answer"] or "account-team question" in result["answer"]
+    assert "CVA is positioned to produce value evidence" in result["answer"]
+    assert "Neara-side alignment remains unresolved" in result["answer"]
     assert "customer adoption is ready" not in result["answer"]
+    assert "CVA contributes value evidence" not in result["answer"]
 
 
 def test_events_include_initiation() -> None:
@@ -186,6 +196,44 @@ def test_role_relations_produce_expected_artifacts() -> None:
     assert relations["relation.director.account_coherence"]["produces"] == ["artifact.delivery_alignment"]
 
 
+def test_surface_contracts_unblock_expected_artifacts_without_contribution() -> None:
+    result = resolve_account_context(FIXTURE)
+
+    assert result["mandates"] == [
+        {
+            "id": "mandate.cva.value_translation",
+            "role": "role.neara_cva",
+            "semantic": "value_translation",
+            "source_basis": ["source.neara_cva_job_description"],
+        },
+        {
+            "id": "mandate.fde.technical_implementation",
+            "role": "role.neara_fde",
+            "semantic": "technical_implementation",
+            "source_basis": ["source.neara_fde_job_description"],
+        },
+        {
+            "id": "mandate.director.account_coherence",
+            "role": "role.neara_director_customer_implementation",
+            "semantic": "account_coherence",
+            "source_basis": ["source.neara_director_customer_implementation_job_description"],
+        },
+    ]
+    assert [contract["expected_artifact"] for contract in result["surface_contracts"]] == [
+        "artifact.value_evidence",
+        "artifact.technical_evidence",
+        "artifact.delivery_alignment",
+    ]
+    assert {contract["state"] for contract in result["surface_contracts"]} == {"unblocked"}
+    assert {contract["artifact_present"] for contract in result["surface_contracts"]} == {False}
+    assert result["expected_artifacts"] == [
+        {"id": "artifact.value_evidence", "produced_by": "relation.cva.value_translation"},
+        {"id": "artifact.technical_evidence", "produced_by": "relation.fde.technical_implementation"},
+        {"id": "artifact.delivery_alignment", "produced_by": "relation.director.account_coherence"},
+    ]
+    assert result["contributed_artifacts"] == []
+
+
 def test_roles_do_not_carry_semantic_relation_bloat() -> None:
     bundle = load_account_context(FIXTURE)
     forbidden = {"translation", "implementation", "coherence", "evidence", "escalation"}
@@ -208,10 +256,10 @@ def test_trace_proves_only_account_context_claims() -> None:
     assert [claim["claim"] for claim in result["trace"]["claims"]] == [
         "Director initiates the account-context question.",
         "RVO context enters the Neara account team.",
-        "CVA contributes value evidence.",
-        "FDE contributes technical evidence.",
-        "Director owns the account surface.",
-        "Corus resolves delivery alignment.",
+        "CVA value-translation mandate is unblocked.",
+        "FDE technical-implementation mandate is unblocked.",
+        "Director account-coherence mandate is unblocked.",
+        "Expected artifacts are identified.",
     ]
 
 

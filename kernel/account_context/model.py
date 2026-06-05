@@ -72,6 +72,7 @@ class Artifact:
     label: str | None
     produced_by: str
     used_by: list[str]
+    present: bool = False
 
 
 @dataclass(frozen=True)

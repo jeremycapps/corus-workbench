@@ -96,12 +96,13 @@ def _relation(data: dict[str, Any]) -> Relation:
 
 
 def _artifact(data: dict[str, Any]) -> Artifact:
-    _require_keys(data, {"id", "label", "produced_by", "used_by"}, "artifact")
+    _require_keys(data, {"id", "label", "produced_by", "used_by"}, "artifact", optional={"present"})
     return Artifact(
         id=str(data["id"]),
         label=_optional_str(data.get("label")),
         produced_by=str(data["produced_by"]),
         used_by=_str_list(data["used_by"], "used_by"),
+        present=bool(data.get("present", False)),
     )
 
 

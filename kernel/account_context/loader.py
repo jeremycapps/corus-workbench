@@ -5,6 +5,7 @@ from typing import Any, TypeVar
 
 from kernel.account_context.model import (
     AccountContextBundle,
+    AccountProfile,
     Artifact,
     Context,
     Relation,
@@ -27,6 +28,7 @@ def load_account_context(root: Path) -> AccountContextBundle:
     surface_data = read_yaml(root / "neara_account.surface")
     relations_data = read_yaml(root / "neara_account.relations")
     artifacts_data = read_yaml(root / "neara_account.artifacts")
+    profile_data = read_yaml(root / "neara_account.profile")
 
     return AccountContextBundle(
         sources=[_source_ref(item) for item in _list_at(sources_data, "sources")],
@@ -36,6 +38,7 @@ def load_account_context(root: Path) -> AccountContextBundle:
         surface=_surface(surface_data),
         relations=[_relation(item) for item in _list_at(relations_data, "relations")],
         artifacts=[_artifact(item) for item in _list_at(artifacts_data, "artifacts")],
+        profile=_profile(profile_data),
     )
 
 
@@ -70,11 +73,11 @@ def _role(data: dict[str, Any]) -> Role:
 
 
 def _surface(data: dict[str, Any]) -> Surface:
-    _require_keys(data, {"id", "label", "owner", "context", "boundary"}, "surface")
+    _require_keys(data, {"id", "label", "context", "boundary"}, "surface", optional={"owner"})
     return Surface(
         id=str(data["id"]),
         label=_optional_str(data.get("label")),
-        owner=str(data["owner"]),
+        owner=_optional_str(data.get("owner")),
         context=str(data["context"]),
         boundary=str(data["boundary"]),
     )
@@ -102,6 +105,20 @@ def _artifact(data: dict[str, Any]) -> Artifact:
     )
 
 
+def _profile(data: dict[str, Any]) -> AccountProfile:
+    _require_keys(data, {"id", "label", "role", "core_question", "lens"}, "profile")
+    lens = data["lens"]
+    if not isinstance(lens, dict):
+        raise ValueError("profile lens must be an object")
+    return AccountProfile(
+        id=str(data["id"]),
+        label=_optional_str(data.get("label")),
+        role=str(data["role"]),
+        core_question=str(data["core_question"]).strip(),
+        lens=lens,
+    )
+
+
 def _list_at(data: dict[str, Any], key: str) -> list[dict[str, Any]]:
     values = data.get(key)
     if not isinstance(values, list):
@@ -112,10 +129,11 @@ def _list_at(data: dict[str, Any], key: str) -> list[dict[str, Any]]:
     return values
 
 
-def _require_keys(data: dict[str, Any], expected: set[str], label: str) -> None:
+def _require_keys(data: dict[str, Any], expected: set[str], label: str, optional: set[str] | None = None) -> None:
+    optional = optional or set()
     actual = set(data)
     missing = sorted(expected - actual)
-    extra = sorted(actual - expected)
+    extra = sorted(actual - expected - optional)
     if missing:
         raise ValueError(f"{label} is missing required keys: {missing}")
     if extra:

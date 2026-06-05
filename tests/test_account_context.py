@@ -20,6 +20,7 @@ FIXTURE = ROOT / "tests" / "fixtures" / "neara_account_context"
 def test_loads_account_context_fixture() -> None:
     bundle = load_account_context(FIXTURE)
 
+    assert bundle.profile.id == "profile.neara_director_customer_implementation"
     assert bundle.context.id == "context.rvo_customer_implementation"
     assert bundle.team.id == "team.neara_account_team"
     assert bundle.surface.id == "surface.account_context"
@@ -39,6 +40,141 @@ def test_surface_is_director_owned() -> None:
     result = resolve_account_context(FIXTURE)
 
     assert result["surface"]["owner"] == "role.neara_director_customer_implementation"
+    assert result["surface"] == {
+        "id": "surface.account_context",
+        "owner": "role.neara_director_customer_implementation",
+        "context": "context.rvo_customer_implementation",
+        "boundary": "team.neara_account_team",
+    }
+
+
+def test_resolution_state_marks_alignment_not_adoption() -> None:
+    result = resolve_account_context(FIXTURE)
+
+    assert "aligned delivery context" in result["answer"]
+    assert "adoption-ready" not in result["answer"]
+    assert result["state"] == {
+        "neara_alignment": "ready",
+        "customer_adoption": "unresolved",
+        "reason": "customer-side acceptance nodes are not represented",
+    }
+    assert result["unresolved"] == [
+        "missing.customer_sponsor_acceptance",
+        "missing.customer_technical_acceptance",
+        "missing.customer_user_workflow",
+    ]
+    assert "state" not in result["surface"]
+    assert "unresolved" not in result["surface"]
+    assert "events" not in result["surface"]
+    assert "state_transitions" not in result["surface"]
+
+
+def test_loads_profile_initiator() -> None:
+    result = resolve_account_context(FIXTURE)
+
+    assert result["initiator"]["profile"] == "profile.neara_director_customer_implementation"
+    assert result["initiator"]["role"] == "role.neara_director_customer_implementation"
+    assert result["initiator"]["core_question"]
+    assert result["initiator"]["lens"] == {
+        "id": "lens.director_account_alignment",
+        "prioritizes": [
+            "semantic.account_coherence",
+            "artifact.delivery_alignment",
+            "state.neara_alignment",
+            "unresolved.customer_adoption",
+        ],
+    }
+
+
+def test_alignment_readiness_is_explained_by_events_and_transitions() -> None:
+    result = resolve_account_context(FIXTURE)
+
+    assert [event["claim"] for event in result["events"]] == [
+        "Director initiates the account-context question.",
+        "RVO context enters the Neara account team.",
+        "CVA contributes value evidence.",
+        "FDE contributes technical evidence.",
+        "Director owns the account surface.",
+        "Corus resolves delivery alignment.",
+    ]
+    assert result["events"][-1] == {
+        "id": "event.delivery_alignment_resolved",
+        "claim": "Corus resolves delivery alignment.",
+        "caused_by": [
+            "artifact.value_evidence",
+            "artifact.technical_evidence",
+            "relation.director.account_coherence",
+        ],
+        "produces_state": "neara_alignment.ready",
+        "lineage": [
+            "artifact.value_evidence",
+            "artifact.technical_evidence",
+            "surface.account_context",
+            "relation.director.account_coherence",
+            "artifact.delivery_alignment",
+        ],
+    }
+    assert result["state_transitions"][0]["from"] == "neara_alignment.unresolved"
+    assert result["state_transitions"][0]["to"] == "alignment.question_initiated"
+    assert result["state_transitions"][1]["from"] == "alignment.question_initiated"
+    assert result["state_transitions"][1]["to"] == "alignment.context_available"
+    assert result["state_transitions"][-1]["to"] == "neara_alignment.ready"
+    assert result["state"]["customer_adoption"] == "unresolved"
+
+
+def test_answer_is_initiator_aware_without_claiming_customer_adoption() -> None:
+    result = resolve_account_context(FIXTURE)
+
+    assert "Director" in result["answer"] or "account-team question" in result["answer"]
+    assert "customer adoption is ready" not in result["answer"]
+
+
+def test_events_include_initiation() -> None:
+    result = resolve_account_context(FIXTURE)
+
+    assert "event.director_initiates_account_context_question" in {event["id"] for event in result["events"]}
+
+
+def test_missing_technical_evidence_keeps_alignment_unresolved(tmp_path: Path) -> None:
+    broken = _copy_fixture(tmp_path)
+    artifacts_path = broken / "neara_account.artifacts"
+    artifacts = read_yaml(artifacts_path)
+    artifacts["artifacts"] = [item for item in artifacts["artifacts"] if item["id"] != "artifact.technical_evidence"]
+    write_yaml(artifacts_path, artifacts)
+
+    result = resolve_account_context(broken)
+
+    _assert_alignment_unresolved(result, "missing.artifact.technical_evidence")
+
+
+def test_missing_cva_value_relation_keeps_alignment_unresolved(tmp_path: Path) -> None:
+    broken = _copy_fixture(tmp_path)
+    relations_path = broken / "neara_account.relations"
+    relations = read_yaml(relations_path)
+    relations["relations"] = [item for item in relations["relations"] if item["id"] != "relation.cva.value_translation"]
+    write_yaml(relations_path, relations)
+
+    result = resolve_account_context(broken)
+
+    _assert_alignment_unresolved(result, "missing.relation.cva.value_translation")
+
+
+def test_missing_surface_owner_keeps_alignment_unresolved(tmp_path: Path) -> None:
+    broken = _copy_fixture(tmp_path)
+    surface_path = broken / "neara_account.surface"
+    surface = read_yaml(surface_path)
+    surface.pop("owner")
+    write_yaml(surface_path, surface)
+
+    result = resolve_account_context(broken)
+
+    assert result["surface"] == {
+        "id": "surface.account_context",
+        "owner": None,
+        "context": "context.rvo_customer_implementation",
+        "boundary": "team.neara_account_team",
+    }
+    _assert_alignment_unresolved(result, "missing.surface.owner")
 
 
 def test_role_relations_produce_expected_artifacts() -> None:
@@ -66,6 +202,19 @@ def test_resolution_hashes_are_deterministic() -> None:
     assert first["trace"]["hash"] == second["trace"]["hash"]
 
 
+def test_trace_proves_only_account_context_claims() -> None:
+    result = resolve_account_context(FIXTURE)
+
+    assert [claim["claim"] for claim in result["trace"]["claims"]] == [
+        "Director initiates the account-context question.",
+        "RVO context enters the Neara account team.",
+        "CVA contributes value evidence.",
+        "FDE contributes technical evidence.",
+        "Director owns the account surface.",
+        "Corus resolves delivery alignment.",
+    ]
+
+
 def test_broken_relation_reference_raises_clear_error(tmp_path: Path) -> None:
     broken = tmp_path / "neara_account_context"
     shutil.copytree(FIXTURE, broken)
@@ -89,6 +238,22 @@ def test_account_context_cli_smoke() -> None:
 
     data = json.loads(completed.stdout)
     assert data["context"]["id"] == "context.rvo_customer_implementation"
+    assert data["initiator"]["profile"] == "profile.neara_director_customer_implementation"
     assert data["team"]["id"] == "team.neara_account_team"
     assert data["surface"]["id"] == "surface.account_context"
     assert data["layer_hashes"]["resolution_hash"]
+
+
+def _copy_fixture(tmp_path: Path) -> Path:
+    broken = tmp_path / "neara_account_context"
+    shutil.copytree(FIXTURE, broken)
+    return broken
+
+
+def _assert_alignment_unresolved(result: dict[str, object], missing_item: str) -> None:
+    assert result["state"]["neara_alignment"] == "unresolved"
+    assert missing_item in result["unresolved"]
+    assert "event.delivery_alignment_resolved" not in {event["id"] for event in result["events"]}
+    assert "neara_alignment.ready" not in {transition["to"] for transition in result["state_transitions"]}
+    assert "state" not in result["surface"]
+    assert "unresolved" not in result["surface"]

@@ -16,6 +16,9 @@ def validate_account_context(bundle: AccountContextBundle) -> None:
     relations = {relation.id: relation for relation in bundle.relations}
     artifacts = {artifact.id: artifact for artifact in bundle.artifacts}
 
+    if bundle.profile.role not in roles:
+        raise AccountContextValidationError(f"profile {bundle.profile.id} role {bundle.profile.role} does not exist")
+
     for role_id in bundle.team.contains:
         if role_id not in roles:
             raise AccountContextValidationError(f"team {bundle.team.id} contains missing role {role_id}")
@@ -25,7 +28,7 @@ def validate_account_context(bundle: AccountContextBundle) -> None:
             raise AccountContextValidationError(f"role {role.id} belongs to missing team {role.team}")
         _validate_sources(role.id, role.source_basis, sources)
 
-    if bundle.surface.owner not in roles:
+    if not bundle.surface.owner or bundle.surface.owner not in roles:
         raise AccountContextValidationError(f"surface {bundle.surface.id} owner {bundle.surface.owner} does not exist")
     if bundle.surface.boundary not in teams:
         raise AccountContextValidationError(f"surface {bundle.surface.id} boundary team {bundle.surface.boundary} does not exist")

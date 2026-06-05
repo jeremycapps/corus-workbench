@@ -1,6 +1,19 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import Any
+
+
+# Account-context v1 keeps these roles narrow:
+# Team = hub of roles.
+# Role = hub of relations.
+# Surface = accountable context boundary.
+# Relation = role contribution into the surface.
+# Artifact = durable output of a relation or surface.
+# Profile/initiator = person-position that asks the core question.
+# Events = how context becomes consequence over time.
+# State transitions = proof that alignment changed.
+# Ledger/trace = proof.
 
 
 @dataclass(frozen=True)
@@ -38,7 +51,7 @@ class Role:
 class Surface:
     id: str
     label: str | None
-    owner: str
+    owner: str | None
     context: str
     boundary: str
 
@@ -62,6 +75,15 @@ class Artifact:
 
 
 @dataclass(frozen=True)
+class AccountProfile:
+    id: str
+    label: str | None
+    role: str
+    core_question: str
+    lens: dict[str, Any]
+
+
+@dataclass(frozen=True)
 class AccountContextBundle:
     sources: list[SourceRef]
     context: Context
@@ -70,6 +92,7 @@ class AccountContextBundle:
     surface: Surface
     relations: list[Relation]
     artifacts: list[Artifact]
+    profile: AccountProfile
 
 
 @dataclass(frozen=True)
@@ -79,6 +102,9 @@ class AccountContextResolution:
     surface: dict[str, object]
     relations: list[dict[str, object]]
     artifacts: list[dict[str, object]]
+    initiator: dict[str, object]
     answer: str
     trace: dict[str, object]
+    events: list[dict[str, object]]
+    state_transitions: list[dict[str, object]]
     layer_hashes: dict[str, str]

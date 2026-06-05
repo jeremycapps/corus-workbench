@@ -1,0 +1,28 @@
+relations:
+  - id: relation.cva.value_translation
+    from_role: role.neara_cva
+    to_surface: surface.account_context
+    semantic: value_translation
+    source_basis:
+      - source.neara_cva_job_description
+      - source.neara_rvo_one_pager
+    produces:
+      - artifact.value_evidence
+  - id: relation.fde.technical_implementation
+    from_role: role.neara_fde
+    to_surface: surface.account_context
+    semantic: technical_implementation
+    source_basis:
+      - source.neara_fde_job_description
+      - source.neara_rvo_one_pager
+    produces:
+      - artifact.technical_evidence
+  - id: relation.director.account_coherence
+    from_role: role.neara_director_customer_implementation
+    to_surface: surface.account_context
+    semantic: account_coherence
+    source_basis:
+      - source.neara_director_customer_implementation_job_description
+      - source.neara_rvo_one_pager
+    produces:
+      - artifact.delivery_alignment

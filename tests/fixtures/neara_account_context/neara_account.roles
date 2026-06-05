@@ -1,0 +1,16 @@
+roles:
+  - id: role.neara_cva
+    label: Customer Value Architect
+    team: team.neara_account_team
+    source_basis:
+      - source.neara_cva_job_description
+  - id: role.neara_fde
+    label: Forward Deployed Engineer
+    team: team.neara_account_team
+    source_basis:
+      - source.neara_fde_job_description
+  - id: role.neara_director_customer_implementation
+    label: Director, Customer Implementation
+    team: team.neara_account_team
+    source_basis:
+      - source.neara_director_customer_implementation_job_description

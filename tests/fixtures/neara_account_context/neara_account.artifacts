@@ -1,0 +1,18 @@
+artifacts:
+  - id: artifact.value_evidence
+    label: Value Evidence
+    produced_by: relation.cva.value_translation
+    used_by:
+      - role.neara_director_customer_implementation
+      - role.neara_fde
+  - id: artifact.technical_evidence
+    label: Technical Evidence
+    produced_by: relation.fde.technical_implementation
+    used_by:
+      - role.neara_director_customer_implementation
+      - role.neara_cva
+  - id: artifact.delivery_alignment
+    label: Delivery Alignment
+    produced_by: relation.director.account_coherence
+    used_by:
+      - team.neara_account_team

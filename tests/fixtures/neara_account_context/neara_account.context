@@ -1,0 +1,5 @@
+id: context.rvo_customer_implementation
+label: RVO customer implementation context
+source_basis:
+  - source.neara_rvo_one_pager
+meaning: RVO intelligence exists and must become customer-usable account context through value evidence, technical evidence, and delivery alignment.

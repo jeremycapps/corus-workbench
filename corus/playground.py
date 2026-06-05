@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Any
 
 from kernel.audit import audit_target
+from kernel.account_context import resolve_account_context
 from kernel.domain.loader import load_domain
 from kernel.domain.validate import validate_domain
 from kernel.engine.hashing import hash_data
@@ -1025,6 +1026,8 @@ def build_parser() -> argparse.ArgumentParser:
     agent.add_argument("--profile")
     agent.add_argument("--lens")
     agent.add_argument("--json", action="store_true", help="Print JSON output.")
+    account_context = sub.add_parser("account-context")
+    account_context.add_argument("fixture", type=Path)
     return parser
 
 
@@ -1045,6 +1048,9 @@ def main(argv: list[str] | None = None) -> None:
         raise SystemExit(f"unknown source command {args.source_command}")
     if args.command == "diff":
         print_output(command_diff(args.fixture), as_json)
+        return
+    if args.command == "account-context":
+        print(json.dumps(resolve_account_context(args.fixture), indent=2, sort_keys=True))
         return
     bundle = load_bundle(args.fixture)
     if args.command == "validate":

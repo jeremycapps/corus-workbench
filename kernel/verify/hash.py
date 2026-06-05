@@ -26,6 +26,12 @@ SEMANTIC_SUFFIXES = {
     ".hash",
     ".timpos",
     ".ledger",
+    ".sources",
+    ".context",
+    ".team",
+    ".roles",
+    ".relations",
+    ".artifacts",
 }
 
 

@@ -1,0 +1,34 @@
+id: sources.neara_account_context
+sources:
+  - id: source.neara_rvo_one_pager
+    type: product_context
+    label: Neara RVO one-pager
+    claims:
+      - RVO models network vulnerabilities.
+      - RVO supports what-if questions.
+      - RVO evaluates interventions using risk, cost, performance, and benefit-cost logic.
+      - RVO supports transparent, version-controlled, auditable decision support.
+  - id: source.neara_cva_job_description
+    type: role_description
+    label: Customer Value Architect job description
+    claims:
+      - CVA drives adoption.
+      - CVA defines and validates value.
+      - CVA develops business cases and ROI metrics.
+      - CVA engages broad customer stakeholder audiences.
+  - id: source.neara_fde_job_description
+    type: role_description
+    label: Forward Deployed Engineer job description
+    claims:
+      - FDE builds custom solutions using SDKs and APIs.
+      - FDE develops integrations and custom workflows.
+      - FDE translates customer needs into technical designs.
+      - FDE aligns the platform with the customer technical environment.
+  - id: source.neara_director_customer_implementation_job_description
+    type: role_description
+    label: Director, Customer Implementation job description
+    claims:
+      - Director owns living account strategy.
+      - Director is accountable for value-driven delivery.
+      - Director navigates organizational complexity.
+      - Director resolves escalation and delivery alignment.

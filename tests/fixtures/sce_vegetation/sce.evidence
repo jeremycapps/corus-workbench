@@ -6,52 +6,99 @@ facts:
     source_observation_ids:
       - vegetation-point-001
       - vegetation-point-002
+    source_context_ids:
+      - source.demo_model_output
+      - source.sce_2025_wmp_update
     supports_domain_node: sce.vegetation_watch_points
     claim: The model delta produced 72 vegetation watch points.
     value: 72
     unit: watch_points
+    trust_status:
+      - demo_synthetic
+      - source_labeled
+      - source_authority_missing
+    trust_note: The 72-count is fixture data; public SCE materials ground the operational context, not this exact export.
 
   - id: fact.clearance_policy.delta
     source_observation: demo_model_output
     source_observation_ids:
       - vegetation-point-001
       - vegetation-point-002
+    source_context_ids:
+      - source.sce_2025_wmp_update
     supports_domain_node: sce.clearance_policy
     claim: The clearance interpretation changed from 3 meters to 5 meters.
     value: 3m_to_5m
+    trust_status:
+      - demo_synthetic
+      - source_labeled
+      - source_authority_missing
+    trust_note: Clearance change is a scenario assertion bounded by public wildfire mitigation context.
 
   - id: fact.crew_hours.planning
     source_observation: demo_customer_input
     source_observation_ids:
       - vegetation-point-001
       - vegetation-point-002
+    source_context_ids:
+      - source.neara_risk_impact_scoring
+      - source.sce_2025_wmp_update
     supports_domain_node: sce.crew_hours
     claim: Vegetation watch points can be translated into crew-hour planning.
+    trust_status:
+      - demo_synthetic
+      - source_labeled
+      - source_authority_missing
+    trust_note: Public sources support implementation relevance; crew-hour conversion remains a synthetic planning assumption.
 
   - id: fact.cost.validation_exposure
     source_observation: demo_customer_input
     source_observation_ids:
       - vegetation-point-001
       - vegetation-point-002
+    source_context_ids:
+      - source.neara_risk_impact_scoring
+      - source.neara_pole_replacement_case_study
     supports_domain_node: sce.cost_exposure
     claim: Validation work creates measurable budget exposure.
     value: 25164
     unit: dollars
+    trust_status:
+      - demo_synthetic
+      - source_authority_missing
+    trust_note: Budget exposure is an illustrative fixture assumption and not an approved SCE cost model.
 
   - id: fact.cost.customer_value
     source_observation: demo_customer_input
     source_observation_ids:
       - vegetation-point-001
       - vegetation-point-002
+    source_context_ids:
+      - source.neara_risk_impact_scoring
+      - source.sce_2025_wmp_update
     supports_domain_node: sce.customer_value
     claim: SCE can translate watch points into workforce and budget planning.
     value_metric: SCE can translate watch points into workforce and budget planning.
+    trust_status:
+      - demo_synthetic
+      - source_labeled
+      - source_authority_missing
+    trust_note: Customer value statement is demo-defined and public-source grounded at the implementation-context level.
 
   - id: fact.neara.repeatable_pattern
     source_observation: demo_model_output
     source_observation_ids:
       - vegetation-point-001
       - vegetation-point-002
+    source_context_ids:
+      - source.neara_risk_impact_scoring
+      - source.neara_risk_prioritization_case_study
+      - source.neara_pole_replacement_case_study
     supports_domain_node: neara.repeatable_product_pattern
     claim: Neara can reuse the model-delta-to-value pattern for other utility customers.
     value_metric: Neara can reuse the model-delta-to-value pattern for other utility customers.
+    trust_status:
+      - demo_synthetic
+      - public_source
+      - source_labeled
+    trust_note: Public Neara materials support the value-translation framing; repeatability is demonstrated as a fixture pattern.

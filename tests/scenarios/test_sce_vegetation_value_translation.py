@@ -108,6 +108,10 @@ def test_operational_trace_connects_fact_to_customer_value_path() -> None:
 
     watch_claim = next(claim for claim in claims if claim["id"] == "fact.watch_points.added")
     assert watch_claim["source_observation"] == "demo_model_output"
+    assert "source.demo_model_output" in watch_claim["source_context_ids"]
+    assert "source.sce_2025_wmp_update" in watch_claim["source_context_ids"]
+    assert "demo_synthetic" in watch_claim["trust_status"]
+    assert watch_claim["trust_note"]
     assert "sce.vegetation_watch_points" in watch_claim["domain_nodes"]
     assert "edge.policy.watch_points" in watch_claim["surface_edges"]
     assert "edge.watch_points.risk" in watch_claim["surface_edges"]

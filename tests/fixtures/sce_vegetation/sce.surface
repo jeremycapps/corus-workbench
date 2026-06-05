@@ -21,7 +21,8 @@ edges:
     weight_base: 1.0
     properties: {}
     source_refs:
-      - demo_model_output
+      - source.demo_model_output
+      - source.sce_2025_wmp_update
   - id: edge.policy.watch_points
     from_node: sce.clearance_policy
     to_node: sce.vegetation_watch_points
@@ -30,7 +31,8 @@ edges:
     weight_base: 1.0
     properties: {}
     source_refs:
-      - vegetation-observations.timpos
+      - source.demo_model_output
+      - source.sce_2025_wmp_update
   - id: edge.watch_points.risk
     from_node: sce.vegetation_watch_points
     to_node: sce.wildfire_risk
@@ -38,7 +40,8 @@ edges:
     label: Watch points ground wildfire risk.
     weight_base: 1.0
     properties: {}
-    source_refs: []
+    source_refs:
+      - source.sce_2025_wmp_update
   - id: edge.risk.priority
     from_node: sce.wildfire_risk
     to_node: sce.operational_priority
@@ -46,7 +49,8 @@ edges:
     label: Wildfire risk escalates operational priority.
     weight_base: 1.0
     properties: {}
-    source_refs: []
+    source_refs:
+      - source.sce_2025_wmp_update
   - id: edge.priority.crew_hours
     from_node: sce.operational_priority
     to_node: sce.crew_hours
@@ -55,7 +59,8 @@ edges:
     weight_base: 1.0
     properties: {}
     source_refs:
-      - demo_customer_input
+      - source.neara_risk_impact_scoring
+      - source.sce_2025_wmp_update
   - id: edge.crew_hours.cost
     from_node: sce.crew_hours
     to_node: sce.cost_exposure
@@ -64,7 +69,8 @@ edges:
     weight_base: 1.0
     properties: {}
     source_refs:
-      - demo_customer_input
+      - source.neara_risk_impact_scoring
+      - source.neara_pole_replacement_case_study
   - id: edge.cost.customer_value
     from_node: sce.cost_exposure
     to_node: sce.customer_value
@@ -72,7 +78,9 @@ edges:
     label: Cost exposure explains customer value.
     weight_base: 1.0
     properties: {}
-    source_refs: []
+    source_refs:
+      - source.neara_risk_impact_scoring
+      - source.sce_2025_wmp_update
   - id: edge.customer_value.product_pattern
     from_node: sce.customer_value
     to_node: neara.repeatable_product_pattern
@@ -80,7 +88,10 @@ edges:
     label: Customer value generalizes into a repeatable product pattern.
     weight_base: 1.0
     properties: {}
-    source_refs: []
+    source_refs:
+      - source.neara_risk_impact_scoring
+      - source.neara_risk_prioritization_case_study
+      - source.neara_pole_replacement_case_study
   - id: edge.evidence.model_delta
     from_node: sce.source_evidence
     to_node: neara.model_delta
@@ -89,7 +100,11 @@ edges:
     weight_base: 1.0
     properties: {}
     source_refs:
-      - demo_model_output
+      - source.demo_model_output
+      - source.neara_risk_impact_scoring
+      - source.neara_risk_prioritization_case_study
+      - source.neara_pole_replacement_case_study
+      - source.sce_2025_wmp_update
 boundary:
   includes:
     - model_delta
@@ -98,4 +113,3 @@ boundary:
   excludes:
     - identity
     - full_ui_layout
-

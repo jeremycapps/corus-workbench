@@ -13,6 +13,8 @@ trust_status_values:
   - source_labeled
   - source_authority_missing
   - deterministic_code_backed
+  - public_source
+  - rejected_assumption
 files:
   - path: bundles/sce_vegetation/artifacts/demo_model_output.json
     classification: central_demo_path
@@ -26,6 +28,30 @@ files:
       - demo_synthetic
       - internally_hash_backed
     why: Intake wrapper declaring source, claims, validations, contracts, and demo output.
+  - path: bundles/sce_vegetation/artifacts/neara_risk_impact_scoring_public.txt
+    classification: supporting_provenance
+    trust_status:
+      - public_source
+      - source_labeled
+    why: Public Neara RVO/risk impact framing used to ground customer implementation context.
+  - path: bundles/sce_vegetation/artifacts/neara_risk_prioritization_public.txt
+    classification: supporting_provenance
+    trust_status:
+      - public_source
+      - source_labeled
+    why: Public Neara risk-prioritization case framing used to explain implementation relevance.
+  - path: bundles/sce_vegetation/artifacts/neara_pole_replacement_public.txt
+    classification: supporting_provenance
+    trust_status:
+      - public_source
+      - source_labeled
+    why: Public Neara pole-replacement case framing used to explain operational value translation.
+  - path: bundles/sce_vegetation/artifacts/sce_2025_wmp_update_public.txt
+    classification: supporting_provenance
+    trust_status:
+      - public_source
+      - source_labeled
+    why: Public SCE wildfire mitigation filing context for utility operational priorities.
   - path: tests/fixtures/sce_vegetation/sce.domain
     classification: central_demo_path
     trust_status:
@@ -124,6 +150,7 @@ claims:
     trust_status:
       - demo_synthetic
       - source_authority_missing
+      - rejected_assumption
     why: Explicitly rejected unsupported demo assumption.
   - id: fact.watch_points.added
     classification: central_demo_path
@@ -136,7 +163,6 @@ claims:
     classification: central_demo_path
     trust_status:
       - demo_synthetic
-      - source_labeled
       - source_authority_missing
     why: Cost exposure is a business assumption for the demo.
   - id: fact.cost.customer_value
@@ -146,3 +172,17 @@ claims:
       - source_labeled
       - source_authority_missing
     why: Customer value statement is not externally approved yet.
+  - id: fact.clearance_policy.delta
+    classification: central_demo_path
+    trust_status:
+      - demo_synthetic
+      - source_labeled
+      - source_authority_missing
+    why: Scenario policy interpretation is bounded by public SCE context but not externally verified.
+  - id: fact.neara.repeatable_pattern
+    classification: central_demo_path
+    trust_status:
+      - demo_synthetic
+      - public_source
+      - source_labeled
+    why: Repeatable value-translation framing is supported by public Neara materials and demonstrated by fixture logic.

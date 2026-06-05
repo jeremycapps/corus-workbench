@@ -275,6 +275,9 @@ def command_ingest(bundle_root: Path, out_root: Path) -> dict[str, Any]:
             }
         )
 
+    def compact(data: dict[str, Any]) -> dict[str, Any]:
+        return {key: value for key, value in data.items() if value is not None}
+
     for source in manifest.get("sources", []):
         write_payload(
             {
@@ -283,10 +286,30 @@ def command_ingest(bundle_root: Path, out_root: Path) -> dict[str, Any]:
                 "type": "artifact",
                 "to": source["id"],
                 "inputs": [],
-                "data": {
-                    "kind": source.get("kind"),
-                    "file": source["file"],
-                },
+                "data": compact(
+                    {
+                        "kind": source.get("kind"),
+                        "file": source["file"],
+                        "authority": source.get("authority"),
+                        "source_status": source.get("source_status"),
+                        "url": source.get("url"),
+                        "trust_status": source.get("trust_status"),
+                        "trust_note": source.get("trust_note"),
+                    }
+                ),
+            }
+        )
+
+    source_context = manifest.get("source_context")
+    if source_context:
+        write_payload(
+            {
+                "from": "user",
+                "act": "declare",
+                "type": "source_context",
+                "to": f"{manifest['id']}.source_context",
+                "inputs": list(source_context.get("primary_source_ids", [])),
+                "data": source_context,
             }
         )
 
@@ -295,8 +318,9 @@ def command_ingest(bundle_root: Path, out_root: Path) -> dict[str, Any]:
         claim_data = {
             "claim": claim["claim"],
             "status": "candidate",
+            "source": claim.get("source"),
         }
-        for optional in ["value", "unit", "candidate_for"]:
+        for optional in ["value", "unit", "candidate_for", "context_sources", "trust_status", "trust_note"]:
             if optional in claim:
                 claim_data[optional] = claim[optional]
         write_payload(
@@ -337,6 +361,30 @@ def command_ingest(bundle_root: Path, out_root: Path) -> dict[str, Any]:
                     "contract_kind": contract["kind"],
                     "ref": Path(contract["ref"]).name,
                 },
+            }
+        )
+
+    declared_contract_ids = {contract["id"] for contract in manifest.get("contracts", [])}
+    for profile in manifest.get("profiles", []):
+        profile_id = profile["id"]
+        if profile_id in declared_contract_ids:
+            continue
+        write_payload(
+            {
+                "from": "user",
+                "act": "declare",
+                "type": "contract",
+                "to": profile_id,
+                "inputs": [],
+                "data": compact(
+                    {
+                        "contract_kind": "profile",
+                        "role": profile.get("role"),
+                        "core_question": profile.get("core_question"),
+                        "allowed_actions": profile.get("allowed_actions"),
+                        "restricted_actions": profile.get("restricted_actions"),
+                    }
+                ),
             }
         )
 
@@ -515,6 +563,9 @@ def _operational_trace(bundle: FixtureBundle) -> dict[str, Any]:
             "unit": fact.get("unit"),
             "value_metric": fact.get("value_metric"),
             "value_metric_ids_or_strings": [fact["value_metric"]] if fact.get("value_metric") else [],
+            "source_context_ids": list(fact.get("source_context_ids", [])),
+            "trust_status": list(fact.get("trust_status", [])),
+            "trust_note": fact.get("trust_note"),
             "derived_fields": {
                 key: fact[key]
                 for key in ["value", "unit", "value_metric"]

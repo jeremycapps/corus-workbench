@@ -33,6 +33,19 @@ def test_neara_model_output_is_central_to_value_translation_demo() -> None:
     assert "source_authority_missing" in entry["trust_status"]
 
 
+def test_public_sources_are_supporting_provenance_for_demo_context() -> None:
+    public_files = [
+        "bundles/sce_vegetation/artifacts/neara_risk_impact_scoring_public.txt",
+        "bundles/sce_vegetation/artifacts/neara_risk_prioritization_public.txt",
+        "bundles/sce_vegetation/artifacts/neara_pole_replacement_public.txt",
+        "bundles/sce_vegetation/artifacts/sce_2025_wmp_update_public.txt",
+    ]
+    for path in public_files:
+        entry = _file_entry(path)
+        assert entry["classification"] == "supporting_provenance"
+        assert "public_source" in entry["trust_status"]
+
+
 def test_sce_translation_contracts_are_central_demo_path() -> None:
     central_files = [
         "tests/fixtures/sce_vegetation/sce.domain",

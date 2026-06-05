@@ -1,12 +1,88 @@
-id: bundle.sce_vegetation
-name: SCE Vegetation Demo
+id: bundle.sce_significance_translation
+name: SCE / Neara Significance Translation Demo
+version: 2.0.0
 timpo_sequence:
 - 11612132757493222933514833726911676416
 - 11612132757493222933514833726911676417
+
+demo_goal:
+  title: When intelligence exists, customers still need significance.
+  central_question: Why does this matter to me?
+  purpose: >
+    Show how broad risk intelligence becomes customer-specific implementation
+    significance: who cares, what changes, which workstreams are affected,
+    what evidence is trusted, which assumptions are rejected, and what next
+    action is defensible.
+  not_the_goal:
+  - Replace Neara RVO
+  - Replace Neara grid modeling, LiDAR, GIS, or simulation
+  - Claim an official Neara export
+  - Claim an official SCE operating model
+  - Validate a specific SCE dollar exposure
+  - Treat the synthetic 72-watch-point fixture as the central demo event
+
+central_demo_event:
+  id: event.customer_needs_significance
+  title: Customer needs significance from broad risk intelligence
+  event_type: significance_translation_request
+  story_grammar:
+    once_upon_a_time:
+      when_where: Public SCE wildfire mitigation context plus Neara public RVO framing
+      corus_layer: timpo_context
+      meaning: >
+        The event is situated in a public utility wildfire-planning context and
+        Neara's public RVO/risk-impact framing.
+    who:
+      initiator: Neara Customer Success / CVA / FDE / Strategic Implementation
+      customer: SCE
+      corus_layer: profile
+      audience:
+      - grid_ops
+      - finance
+      - regulatory
+      - executive_sponsor
+      - neara_implementation_team
+    this:
+      input: Broad risk intelligence exists
+      corus_layer: source_claim
+      examples:
+      - refreshed wildfire risk-model outputs
+      - RVO-style risk/consequence/cost framing
+      - public case-study proof patterns
+      - customer workstreams affected by model changes
+    matter:
+      corus_layer: surface_value
+      implementation_consequences:
+      - affected workstreams
+      - stakeholder-specific questions
+      - evidence requirements
+      - rejected assumptions
+      - defensible next action
+    why:
+      corus_layer: audit_because_trace
+      result: situated significance
+      rendered_as:
+      - customer-specific implementation trace
+      - stakeholder views
+      - source boundary
+      - action recommendation
+      - audit proof
+
 source_context:
-  demo_frame: RVO-style customer implementation context trace
+  demo_frame: Significance translation from broad risk intelligence to customer-specific implementation context
   status: Public-source grounded scenario; not an official Neara export or SCE operating model.
-  customer_implementation_pain: Broad risk and grid-model intelligence must be translated into customer-specific workstreams, stakeholder questions, evidence requirements, and defensible next actions.
+  customer_implementation_pain: >
+    Broad risk and grid-model intelligence must be translated into customer-specific
+    workstreams, stakeholder questions, evidence requirements, assumptions,
+    permissions, and defensible next actions.
+  central_question:
+    text: Why does this matter to me?
+    resolved_by:
+    - stakeholder
+    - affected_workstream
+    - evidence_boundary
+    - rejected_assumption
+    - defensible_action
   primary_source_ids:
   - source.neara_risk_impact_scoring
   - source.neara_risk_prioritization_case_study
@@ -14,19 +90,11 @@ source_context:
   - source.sce_2025_wmp_update
   bounded_claims:
   - Neara publicly frames RVO as risk likelihood, consequence, cost-benefit, intervention selection, and decision justification.
-  - Neara public case studies show adjacent proof patterns around risk prioritization, SAIDI reduction, capital planning, and pole replacement deferral.
+  - Neara public case studies show adjacent proof patterns around risk prioritization, capital planning, and regulator-facing justification.
   - SCE public wildfire mitigation materials show refreshed risk-model outputs affecting inspections, vegetation management scope, and system-hardening scoping/schedules.
-  - The demo remains synthetic where it asserts a specific Neara-style model output count or cost amount.
+  - The demo remains synthetic where it asserts a specific Neara-style model output count or specific cost amount.
+
 sources:
-- id: source.demo_model_output
-  file: artifacts/demo_model_output.json
-  kind: model_output
-  authority: demo_synthetic
-  source_status: synthetic_internal_fixture
-  trust_status:
-  - demo_synthetic
-  - source_authority_missing
-  trust_note: Synthetic Neara-style fixture used to exercise Corus admission, translation, validation, and audit behavior.
 - id: source.neara_risk_impact_scoring
   file: artifacts/neara_risk_impact_scoring.json
   kind: product_context
@@ -36,7 +104,14 @@ sources:
   trust_status:
   - source_labeled
   - public_source
-  trust_note: Frames Neara RVO as decision validation, risk likelihood/consequence/cost, intervention selection, and cost-benefit analysis.
+  supports:
+  - Neara publicly frames RVO as risk likelihood, consequence, cost-benefit, intervention selection, and decision justification.
+  - Neara positions RVO around helping utilities validate decisions and gather context for risk mitigation or asset upgrade decisions.
+  - RVO supports the idea that technical intelligence must become defensible customer action.
+  limits:
+  - Does not prove an official Neara export exists for this demo.
+  - Does not validate the synthetic 72-watch-point count.
+  - Does not validate any SCE-specific cost exposure.
 - id: source.neara_risk_prioritization_case_study
   file: artifacts/neara_risk_prioritization_case_study.json
   kind: proof_pattern
@@ -46,7 +121,13 @@ sources:
   trust_status:
   - source_labeled
   - public_source
-  trust_note: Shows a public Neara proof pattern for risk prioritization, shared risk views, capital planning, and projected SAIDI reduction.
+  supports:
+  - Neara publicly describes risk-prioritization workflows.
+  - The case study connects risk scoring to planning, prioritization, capital confidence, and utility decision-making.
+  - The case study supports the pattern that technical outputs need customer-facing explanation and prioritization.
+  limits:
+  - Not identified as SCE.
+  - Does not validate the demo synthetic count.
 - id: source.neara_pole_replacement_case_study
   file: artifacts/neara_pole_replacement_case_study.json
   kind: proof_pattern
@@ -56,7 +137,13 @@ sources:
   trust_status:
   - source_labeled
   - public_source
-  trust_note: Shows a public Neara proof pattern for using physics-based analysis and evidence to justify replacement decisions to regulators.
+  supports:
+  - Neara publicly describes using physics-based analysis to support pole replacement decisions.
+  - The case study supports the pattern of technical analysis becoming defensible investment justification.
+  - The case study supports the need for regulator-facing evidence.
+  limits:
+  - Not identified as SCE.
+  - Does not validate a demo-specific cost amount.
 - id: source.sce_2025_wmp_update
   file: artifacts/sce_2025_wmp_update_public_filing.json
   kind: customer_operating_context
@@ -66,8 +153,303 @@ sources:
   trust_status:
   - source_labeled
   - public_source
-  trust_note: 'Grounds the customer-side implementation problem: refreshed risk-model outputs affect inspection strategy, vegetation management scope, and system-hardening scoping/schedules.'
+  supports:
+  - SCE describes wildfire-risk-model updates and top-risk circuit/segment reporting.
+  - SCE describes how new risk-model information affects different mitigation workstreams differently.
+  - SCE describes refreshed risk outputs affecting inspection strategy, vegetation management scope, and system-hardening scoping/schedules.
+  - SCE provides public customer-side operating context for implementation translation.
+  limits:
+  - Does not claim Neara generated SCE's risk-model outputs.
+  - Does not validate the synthetic 72-watch-point count.
+  - Does not validate a specific SCE dollar exposure for the demo.
+- id: source.demo_model_output
+  file: artifacts/demo_model_output.json
+  kind: synthetic_fixture
+  authority: demo_synthetic
+  source_status: synthetic_internal_fixture
+  trust_status:
+  - demo_synthetic
+  - source_authority_missing
+  supports:
+  - Exercises Corus admission, validation, permissioning, and audit mechanics.
+  limits:
+  - Must not be treated as the central demo event.
+  - Must not be presented as an official Neara export.
+  - Must not be presented as an official SCE source.
+
+domain:
+  id: domain.sce_significance_translation
+  version: 2.0.0
+  node_types:
+  - broad_intelligence
+  - customer_context
+  - significance_request
+  - affected_workstreams
+  - stakeholder_questions
+  - evidence_requirements
+  - unsupported_assumption
+  - next_action
+  - situated_significance
+  - source_boundary
+  nodes:
+  - id: neara.rvo_intelligence
+    type: broad_intelligence
+    label: Neara RVO-style intelligence
+    meaning: Risk, consequence, cost, intervention, and decision-justification intelligence exists.
+    source_refs:
+    - source.neara_risk_impact_scoring
+    - source.neara_risk_prioritization_case_study
+    - source.neara_pole_replacement_case_study
+  - id: sce.customer_operating_context
+    type: customer_context
+    label: SCE operating context
+    meaning: Public SCE wildfire-planning materials show customer-side workstreams affected by risk-model outputs.
+    source_refs:
+    - source.sce_2025_wmp_update
+  - id: corus.significance_request
+    type: significance_request
+    label: Customer asks why this matters
+    meaning: The customer still needs to understand why broad intelligence matters to their own work, stakeholders, evidence, and decision.
+    source_refs:
+    - source.neara_risk_impact_scoring
+    - source.sce_2025_wmp_update
+  - id: sce.affected_workstreams
+    type: affected_workstreams
+    label: Affected customer workstreams
+    meaning: Risk-model changes can affect inspections, vegetation management, and system hardening differently.
+    source_refs:
+    - source.sce_2025_wmp_update
+  - id: customer.stakeholder_questions
+    type: stakeholder_questions
+    label: Stakeholder-specific questions
+    meaning: The same intelligence means different things to grid ops, finance, regulatory, executives, and implementation teams.
+    source_refs:
+    - source.neara_risk_impact_scoring
+    - source.sce_2025_wmp_update
+  - id: customer.evidence_requirements
+    type: evidence_requirements
+    label: Evidence requirements
+    meaning: Customer-specific action requires source boundaries, proof status, and defensible assumptions.
+    source_refs:
+    - source.neara_risk_impact_scoring
+    - source.neara_pole_replacement_case_study
+    - source.sce_2025_wmp_update
+  - id: customer.unsupported_assumption
+    type: unsupported_assumption
+    label: Rejected unsupported assumption
+    meaning: Specific cost or operational claims must be rejected when not supported by customer-approved sources.
+    source_refs:
+    - source.neara_pole_replacement_case_study
+  - id: customer.defensible_next_action
+    type: next_action
+    label: Defensible next action
+    meaning: The implementation team can move forward only with actions supported by evidence, permission, and customer context.
+    source_refs:
+    - source.neara_risk_impact_scoring
+    - source.sce_2025_wmp_update
+  - id: corus.situated_significance
+    type: situated_significance
+    label: Situated significance
+    meaning: The output has been translated into why it matters to a specific customer, stakeholder, workflow, and decision.
+    source_refs:
+    - source.neara_risk_impact_scoring
+    - source.sce_2025_wmp_update
+  - id: corus.source_boundary
+    type: source_boundary
+    label: Source boundary
+    meaning: Public sources ground the implementation context; synthetic fixture data exercises mechanics; unsupported assumptions are rejected.
+    source_refs:
+    - source.neara_risk_impact_scoring
+    - source.sce_2025_wmp_update
+    - source.demo_model_output
+
+surface:
+  id: surface.sce_significance_translation
+  domain_id: domain.sce_significance_translation
+  version: 2.0.0
+  entrypoint: neara.rvo_intelligence
+  terminal: corus.situated_significance
+  nodes:
+  - neara.rvo_intelligence
+  - corus.significance_request
+  - sce.customer_operating_context
+  - sce.affected_workstreams
+  - customer.stakeholder_questions
+  - customer.evidence_requirements
+  - customer.unsupported_assumption
+  - customer.defensible_next_action
+  - corus.situated_significance
+  - corus.source_boundary
+  edges:
+  - id: edge.rvo_intelligence.significance_request
+    from_node: neara.rvo_intelligence
+    to_node: corus.significance_request
+    type: creates_question
+    label: Broad intelligence creates the need for customer-specific significance.
+    weight_base: 1.0
+    source_refs:
+    - source.neara_risk_impact_scoring
+  - id: edge.significance_request.customer_context
+    from_node: corus.significance_request
+    to_node: sce.customer_operating_context
+    type: situates
+    label: The significance request must be situated in the customer's operating context.
+    weight_base: 1.0
+    source_refs:
+    - source.sce_2025_wmp_update
+  - id: edge.customer_context.workstreams
+    from_node: sce.customer_operating_context
+    to_node: sce.affected_workstreams
+    type: affects
+    label: Customer context determines which workstreams may be affected.
+    weight_base: 1.0
+    source_refs:
+    - source.sce_2025_wmp_update
+  - id: edge.workstreams.stakeholder_questions
+    from_node: sce.affected_workstreams
+    to_node: customer.stakeholder_questions
+    type: branches_into
+    label: Affected workstreams create different stakeholder questions.
+    weight_base: 1.0
+    source_refs:
+    - source.sce_2025_wmp_update
+  - id: edge.stakeholder_questions.evidence_requirements
+    from_node: customer.stakeholder_questions
+    to_node: customer.evidence_requirements
+    type: requires
+    label: Stakeholder-specific meaning requires evidence boundaries.
+    weight_base: 1.0
+    source_refs:
+    - source.neara_risk_impact_scoring
+    - source.sce_2025_wmp_update
+  - id: edge.evidence_requirements.unsupported_assumption
+    from_node: customer.evidence_requirements
+    to_node: customer.unsupported_assumption
+    type: rejects
+    label: Evidence requirements reject unsupported customer-specific claims.
+    weight_base: 1.0
+    source_refs:
+    - source.neara_pole_replacement_case_study
+  - id: edge.evidence_requirements.next_action
+    from_node: customer.evidence_requirements
+    to_node: customer.defensible_next_action
+    type: permits
+    label: Evidence requirements shape which next action is defensible.
+    weight_base: 1.0
+    source_refs:
+    - source.neara_risk_impact_scoring
+    - source.sce_2025_wmp_update
+  - id: edge.next_action.situated_significance
+    from_node: customer.defensible_next_action
+    to_node: corus.situated_significance
+    type: resolves
+    label: The defensible next action resolves why the intelligence matters now.
+    weight_base: 1.0
+    source_refs:
+    - source.neara_risk_impact_scoring
+    - source.sce_2025_wmp_update
+  - id: edge.source_boundary.evidence_requirements
+    from_node: corus.source_boundary
+    to_node: customer.evidence_requirements
+    type: constrains
+    label: Source boundary constrains which claims can be treated as trusted.
+    weight_base: 1.0
+    source_refs:
+    - source.demo_model_output
+    - source.sce_2025_wmp_update
+    - source.neara_risk_impact_scoring
+
+facts:
+- id: fact.customer.needs_significance
+  source_observation: public_context_bundle
+  source_context_ids:
+  - source.neara_risk_impact_scoring
+  - source.sce_2025_wmp_update
+  supports_domain_node: corus.significance_request
+  claim: >
+    Broad risk intelligence exists, but the customer still needs to understand
+    why it matters to their own workstreams, stakeholders, evidence needs, and
+    next action.
+  trust_status:
+  - source_labeled
+  - public_source
+  trust_note: Public sources ground the context that risk intelligence requires customer-specific implementation translation.
+- id: fact.rvo.intelligence_exists
+  source_observation: source.neara_risk_impact_scoring
+  source_context_ids:
+  - source.neara_risk_impact_scoring
+  supports_domain_node: neara.rvo_intelligence
+  claim: Neara publicly frames RVO as a system for connecting risk, consequence, cost, intervention selection, and decision justification.
+  trust_status:
+  - source_labeled
+  - public_source
+- id: fact.sce.risk_model_outputs_affect_workstreams
+  source_observation: source.sce_2025_wmp_update
+  source_context_ids:
+  - source.sce_2025_wmp_update
+  supports_domain_node: sce.affected_workstreams
+  claim: SCE public wildfire-planning materials show that refreshed risk-model outputs can affect inspections, vegetation management, and system-hardening scoping or schedules.
+  trust_status:
+  - source_labeled
+  - public_source
+- id: fact.customer.unsupported_specific_cost
+  source_observation: demo_customer_input
+  source_context_ids:
+  - source.neara_pole_replacement_case_study
+  supports_domain_node: customer.unsupported_assumption
+  claim: A specific dollar impact cannot be asserted without a customer-approved cost model.
+  trust_status:
+  - rejected_assumption
+  - source_authority_missing
+  trust_note: Public sources support the general need for cost/value justification; they do not support a specific demo dollar amount.
+- id: fact.corus.situated_significance
+  source_observation: corus_context_trace
+  source_context_ids:
+  - source.neara_risk_impact_scoring
+  - source.sce_2025_wmp_update
+  supports_domain_node: corus.situated_significance
+  claim: >
+    Corus translates broad intelligence into customer-specific significance:
+    affected workstreams, stakeholder questions, evidence boundaries, rejected
+    assumptions, and defensible next action.
+  trust_status:
+  - internally_hash_backed
+  - source_labeled
+
 claims:
+- id: claim.customer.needs_significance
+  source: source.neara_risk_impact_scoring
+  context_sources:
+  - source.neara_risk_impact_scoring
+  - source.sce_2025_wmp_update
+  claim: Broad risk intelligence exists, but the customer still needs customer-specific significance before it can become action.
+  candidate_for:
+  - corus.significance_request
+  trust_status:
+  - source_labeled
+  - public_source
+  trust_note: This is the central admissible claim for the demo.
+- id: claim.sce.workstreams_affected
+  source: source.sce_2025_wmp_update
+  context_sources:
+  - source.sce_2025_wmp_update
+  claim: Public SCE wildfire mitigation materials show that refreshed risk-model outputs can affect inspections, vegetation management, and system-hardening scoping or schedules.
+  candidate_for:
+  - sce.affected_workstreams
+  trust_status:
+  - source_labeled
+  - public_source
+- id: claim.customer.unsupported_specific_cost
+  source: source.demo_model_output
+  context_sources:
+  - source.neara_pole_replacement_case_study
+  claim: A specific dollar impact can be asserted from the public sources alone.
+  candidate_for:
+  - customer.unsupported_assumption
+  trust_status:
+  - rejected_assumption
+  - source_authority_missing
+  trust_note: This claim must be rejected. Public sources support the need for cost/value justification, but not a specific SCE dollar amount.
 - id: claim.sce.watch_points_added
   source: source.demo_model_output
   context_sources:
@@ -77,11 +459,11 @@ claims:
   value: 72
   unit: watch_points
   candidate_for:
-  - domain.sce.vegetation_watch_points
+  - legacy.sce.vegetation_watch_points
   trust_status:
   - demo_synthetic
   - source_authority_missing
-  trust_note: Count comes from synthetic fixture; public sources only ground the surrounding RVO-style implementation context.
+  trust_note: Legacy synthetic fixture retained only for backward compatibility. This should not be rendered as the central demo event.
 - id: claim.sce.unsupported_cost_assumption
   source: source.demo_model_output
   context_sources:
@@ -92,14 +474,25 @@ claims:
   - demo_synthetic
   - source_authority_missing
   - rejected_assumption
-  trust_note: Specific cost amount is intentionally unsupported and should be rejected unless a customer-approved cost model is supplied.
+  trust_note: Legacy rejected cost fixture retained for existing audit target compatibility.
+
 validations:
+- target: claim.customer.needs_significance
+  admissible: true
+  reason: Public Neara and SCE sources support the implementation-context problem.
+- target: claim.sce.workstreams_affected
+  admissible: true
+  reason: Public SCE wildfire mitigation materials support the claim that refreshed risk-model outputs affect customer workstreams.
+- target: claim.customer.unsupported_specific_cost
+  admissible: false
+  reason: Public sources do not support a specific SCE dollar impact. A customer-approved cost model is required.
 - target: claim.sce.watch_points_added
   admissible: true
-  reason: admissible true
+  reason: Admissible only as a synthetic fixture claim for backward compatibility; it is not the central demo event.
 - target: claim.sce.unsupported_cost_assumption
   admissible: false
-  reason: admissible false
+  reason: Legacy unsupported cost claim remains rejected.
+
 contracts:
 - id: domain.sce_vegetation
   kind: domain
@@ -119,7 +512,110 @@ contracts:
 - id: value.sce_customer
   kind: value
   ref: contracts/sce_customer.value
+
+profiles:
+- id: profile.neara_implementation
+  role: Neara Customer Success / CVA / FDE
+  core_question: Why does this intelligence matter to this customer, in this workflow, for this stakeholder, right now?
+  allowed_actions:
+  - generate_implementation_context_trace
+  - identify_stakeholder_questions
+  - identify_evidence_gaps
+  - reject_unsupported_assumption
+  - prepare_customer_value_story
+  restricted_actions:
+  - commit_customer_budget
+  - dispatch_crew
+  - change_customer_policy
+  - claim_official_neara_export
+  - claim_official_sce_operating_model
+- id: profile.customer_success_director
+  role: Director / Strategic Implementation
+  core_question: Is the implementation team preserving the context needed for the customer to act, trust, and reuse this intelligence?
+  allowed_actions:
+  - review_source_boundary
+  - review_stakeholder_questions
+  - review_defensible_next_action
+  - identify_reusable_value_pattern
+  restricted_actions:
+  - approve_budget_change
+  - certify_regulatory_evidence
+  - claim_customer_approval
+
+stakeholder_views:
+- id: stakeholder.grid_ops
+  label: Grid Ops
+  core_question: What operational work changes first?
+  needs:
+  - affected workstream
+  - operational priority
+  - field action boundary
+  - schedule impact
+- id: stakeholder.finance
+  label: Finance
+  core_question: What budget or capital plan may be affected?
+  needs:
+  - cost basis
+  - spend-efficiency logic
+  - source authority
+  - rejected unsupported amounts
+- id: stakeholder.regulatory
+  label: Regulatory
+  core_question: Can the decision be defended?
+  needs:
+  - source trail
+  - prioritization logic
+  - model-update basis
+  - evidence package status
+- id: stakeholder.executive_sponsor
+  label: Executive Sponsor
+  core_question: Why does this matter now?
+  needs:
+  - strategic consequence
+  - risk/value framing
+  - decision urgency
+  - customer impact
+- id: stakeholder.neara_implementation_team
+  label: Neara Implementation Team
+  core_question: What does the customer need in order to act?
+  needs:
+  - customer-specific meaning
+  - stakeholder map
+  - evidence gaps
+  - rejected assumptions
+  - implementation next step
+
 outputs:
+- id: output.implementation_context_trace
+  from: corus.agent_run
+  inputs:
+  - claim.customer.needs_significance
+  - claim.sce.workstreams_affected
+  - claim.customer.unsupported_specific_cost
+  - domain.sce_significance_translation
+  - surface.sce_significance_translation
+  - profile.neara_implementation
+  data:
+    proposed_action: generate_implementation_context_trace
+    permission_result: allowed
+    headline: When intelligence exists, customers still need significance.
+    decision_summary:
+      what_changed: Broad risk intelligence exists.
+      why_it_matters: The customer needs to understand how that intelligence affects workstreams, stakeholders, evidence, assumptions, and action.
+      customer_value: Customer-specific implementation meaning.
+      recommended_action: Generate implementation context trace.
+      trust_status: Public context · synthetic fixture bounded · unsupported assumptions rejected · audit proof available.
+    metric_cards:
+    - value: Public context
+      label: source-grounded scenario
+    - value: 3
+      label: affected workstreams
+    - value: 5
+      label: stakeholder questions
+    - value: 1
+      label: rejected assumption
+    - value: Audit proof
+      label: available
 - id: output.sce_grid_ops.work_packet
   from: corus.agent_run
   inputs:
@@ -131,4 +627,45 @@ outputs:
   data:
     proposed_action: generate_work_packet
     permission_result: allowed
-    note: Generated output fixture for output target audit resolution.
+    note: Legacy generated output fixture retained for existing output target audit resolution.
+
+ui_copy:
+  hero:
+    headline: When intelligence exists, customers still need significance.
+    subhead: >
+      This proof-of-work shows how public Neara RVO framing and SCE
+      wildfire-planning context can be translated into customer-specific
+      implementation meaning: who cares, what changes, what evidence is trusted,
+      what assumptions are rejected, and what action is defensible.
+  source_boundary:
+    public_context: Neara RVO framing, Neara public case studies, and SCE wildfire-planning materials ground the implementation context.
+    synthetic_fixture: Synthetic fixture data is retained only to exercise Corus admission, validation, permissioning, and audit behavior.
+    rejected_assumption: Specific cost or operational claims are rejected unless customer-approved evidence exists.
+  what_this_demo_proves:
+  - Broad intelligence can be translated into customer-specific significance.
+  - Different stakeholders need different answers to the same intelligence.
+  - Public sources can ground context without overclaiming synthetic details.
+  - Unsupported assumptions can be rejected rather than silently rendered as facts.
+  - Recommended actions can be checked against permissions and evidence.
+  - The reasoning path can be preserved for handoff, value review, and audit.
+  out_of_scope:
+  - Official Neara export verification
+  - Official SCE operating model
+  - Actual SCE cost exposure
+  - Replacement of Neara RVO
+  - Replacement of grid modeling, LiDAR, GIS, or simulation
+  - Claiming that Neara produced the SCE public risk-model outputs
+
+legacy_fixture_boundary:
+  keep_for_backward_compatibility:
+  - fact.watch_points.added
+  - claim.sce.watch_points_added
+  - claim.sce.unsupported_cost_assumption
+  - output.sce_grid_ops.work_packet
+  - artifacts/demo_model_output.json
+  do_not_use_as_central_event:
+  - 72 synthetic watch points translated
+  replacement_central_event:
+  - fact.customer.needs_significance
+  - claim.customer.needs_significance
+  - output.implementation_context_trace

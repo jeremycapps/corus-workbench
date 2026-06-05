@@ -9,23 +9,28 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from typing import Any, Callable
 
+from kernel.engine.hashing import hash_data
+from kernel.verify.hash import read_yaml
+
 
 ROOT = Path(__file__).resolve().parents[1]
 FIXTURE = Path("tests/fixtures/sce_vegetation")
+BUNDLE = Path("bundles/sce_vegetation/corus.bundle.yaml")
 TITLE = "Neara / SCE Value Translation Demo"
 SOURCE_STATUS = "demo-synthetic / internally hash-backed / source-authority missing where applicable"
 TRUST_BANNER = (
-    "Proof-of-work demo: synthetic Neara-style input, internally hash-backed, not an official Neara or SCE export."
-    " Source authority pending; source-authority missing where applicable."
+    "public-source grounded scenario with synthetic fixture data. This is not an official Neara export or SCE operating model. "
+    "Public sources ground the implementation context; the 72-watch-point count and cost assumptions remain synthetic or rejected where applicable."
 )
 OPERATIONAL_EXPLANATION = (
-    "A Neara-style model delta becomes customer value by moving through policy interpretation, "
-    "watch-point classification, wildfire risk, operational priority, crew planning, cost exposure, and SCE value."
+    "Broad risk intelligence becomes customer-specific implementation context by moving through policy interpretation, "
+    "watch-point classification, wildfire risk, operational priority, crew planning, cost exposure, and customer value."
 )
-HERO_HEADLINE = "Turn grid model outputs into defensible work and budget decisions."
+HERO_HEADLINE = "When risk models change, customer implementation changes."
 HERO_SUBHEAD = (
-    "This proof-of-work starts with 72 vegetation watch points and shows how a Customer Value Architect "
-    "can translate them into SCE-specific operational impact, recommended action, business value, and audit evidence."
+    "This proof-of-work uses public SCE wildfire mitigation materials and Neara's public RVO framing to show how broad "
+    "risk intelligence becomes customer-specific implementation context: affected workstreams, stakeholder questions, "
+    "evidence needs, rejected assumptions, and defensible next actions."
 )
 
 CommandRunner = Callable[[list[str]], dict[str, Any]]
@@ -46,6 +51,7 @@ def load_demo_data(root: Path = ROOT, runner: CommandRunner | None = None) -> di
     run = runner or (lambda args: _run_corus_json(args, root=root))
     fixture = str(FIXTURE)
     return {
+        "manifest": read_yaml(root / BUNDLE),
         "explain": run(["explain", fixture]),
         "sce_grid_ops": run(["agent-run", fixture, "--profile", "sce_grid_ops", "--lens", "vegetation_ops"]),
         "neara_value_architect": run(
@@ -58,6 +64,18 @@ def load_demo_data(root: Path = ROOT, runner: CommandRunner | None = None) -> di
 
 
 def build_demo_model(data: dict[str, Any]) -> dict[str, Any]:
+    manifest = data.get("manifest", {})
+    ui_copy = manifest.get("ui_copy", {})
+    ui_hero = ui_copy.get("hero", {})
+    source_context = manifest.get("source_context", {})
+    sources = [_decorate_source(source) for source in manifest.get("sources", [])]
+    public_sources = [source for source in sources if "public_source" in source.get("trust_status", [])]
+    synthetic_sources = [source for source in sources if "demo_synthetic" in source.get("trust_status", [])]
+    facts = [_decorate_fact(fact, sources) for fact in manifest.get("facts", [])]
+    stakeholder_views = list(manifest.get("stakeholder_views", []))
+    implementation_output = _manifest_output(manifest, "output.implementation_context_trace")
+    implementation_data = implementation_output.get("data", {})
+    implementation_summary = implementation_data.get("decision_summary", {})
     explain = data["explain"]
     operational = explain["operational_trace"]
     claims = {claim["id"]: claim for claim in operational["claims"]}
@@ -73,10 +91,23 @@ def build_demo_model(data: dict[str, Any]) -> dict[str, Any]:
     }
     return {
         "title": TITLE,
-        "headline": HERO_HEADLINE,
-        "subhead": HERO_SUBHEAD,
+        "headline": ui_hero.get("headline", HERO_HEADLINE),
+        "subhead": ui_hero.get("subhead", HERO_SUBHEAD),
         "source_status": SOURCE_STATUS,
         "trust_banner": TRUST_BANNER,
+        "source_context": source_context,
+        "sources": sources,
+        "public_sources": public_sources,
+        "synthetic_sources": synthetic_sources,
+        "facts": facts,
+        "implementation_details": _implementation_detail_cards(),
+        "stakeholder_views": stakeholder_views,
+        "source_boundary": {
+            "status": source_context.get("status", TRUST_BANNER),
+            "public_context_sources": public_sources,
+            "synthetic_fixture_sources": synthetic_sources,
+            "bounded_claims": list(source_context.get("bounded_claims", [])),
+        },
         "framing": (
             "This does not replace Neara's model. It starts from a Neara-style model output "
             "and translates it into customer-specific value, action, and audit proof."
@@ -104,28 +135,45 @@ def build_demo_model(data: dict[str, Any]) -> dict[str, Any]:
             "Customer value",
         ],
         "outcome_metrics": [
-            {"value": "72", "label": "watch points translated"},
-            {"value": "1", "label": "recommended action"},
-            {"value": "1", "label": "rejected assumption"},
-            {"value": "Audit proof", "label": "available"},
+            *implementation_data.get(
+                "metric_cards",
+                [
+                    {"value": "Public context", "label": "source-grounded scenario"},
+                    {"value": "72", "label": "synthetic watch points translated"},
+                    {"value": "1", "label": "recommended action"},
+                    {"value": "Audit proof", "label": "available"},
+                ],
+            )
         ],
         "decision_summary": {
-            "what_changed": "72 vegetation watch points",
-            "why_it_matters": "Vegetation items may require operational review under clearance policy",
-            "customer_value": "Workforce planning + budget exposure",
-            "recommended_action": "Generate work packet",
-            "trust_status": "Included claim · rejected assumption · audit proof available",
+            "what_changed": "Broad risk intelligence exists",
+            "why_it_matters": implementation_summary.get(
+                "why_it_matters",
+                "The customer needs significance before intelligence becomes action",
+            ),
+            "customer_value": implementation_summary.get(
+                "customer_value",
+                "Implementation context for each stakeholder",
+            ),
+            "recommended_action": implementation_summary.get(
+                "recommended_action",
+                "Generate implementation context trace",
+            ),
+            "trust_status": implementation_summary.get(
+                "trust_status",
+                "Public-source grounded · synthetic fixture bounded · rejected cost assumption preserved",
+            ),
         },
         "workflow": [
             {
                 "step": "1",
                 "title": "Start with the model output",
-                "body": "72 vegetation watch points from a Neara-style output.",
+                "body": "Treat the 72 vegetation watch points as synthetic fixture output from a Neara-style model delta.",
             },
             {
                 "step": "2",
                 "title": "Ask the customer-value question",
-                "body": "What work, budget, and operational priority does this create for SCE?",
+                "body": "Use public SCE/Neara context to ask what workstream, stakeholder, evidence, and action boundary changes.",
             },
             {
                 "step": "3",
@@ -208,18 +256,24 @@ def build_demo_model(data: dict[str, Any]) -> dict[str, Any]:
             ],
         },
         "audit_proofs": audits,
-        "proves": [
-            "A model output can be translated into a customer-facing decision.",
-            "Claims can be admitted or rejected.",
-            "Recommended actions can be checked against role permissions.",
-            "Audit proof can explain why a claim or action was included, excluded, or allowed.",
-        ],
-        "out_of_scope": [
-            "Official Neara export verification.",
-            "Externally approved SCE operating model.",
-            "Actual SCE cost exposure.",
-            "Replacement of Neara's grid modeling, LiDAR, GIS, or simulation pipeline.",
-        ],
+        "proves": ui_copy.get(
+            "what_this_demo_proves",
+            [
+                "A model output can be translated into a customer-facing decision.",
+                "Claims can be admitted or rejected.",
+                "Recommended actions can be checked against role permissions.",
+                "Audit proof can explain why a claim or action was included, excluded, or allowed.",
+            ],
+        ),
+        "out_of_scope": ui_copy.get(
+            "out_of_scope",
+            [
+                "Official Neara export verification.",
+                "Externally approved SCE operating model.",
+                "Actual SCE cost exposure.",
+                "Replacement of Neara's grid modeling, LiDAR, GIS, or simulation pipeline.",
+            ],
+        ),
     }
 
 
@@ -259,6 +313,103 @@ def _human_action(action: str) -> str:
     return action.replace("_", " ").capitalize()
 
 
+def _decorate_source(source: dict[str, Any]) -> dict[str, Any]:
+    source_id = str(source.get("id", ""))
+    labels = {
+        "source.demo_model_output": "Synthetic Neara-style model output",
+        "source.neara_risk_impact_scoring": "Neara RVO / risk impact scoring",
+        "source.neara_risk_prioritization_case_study": "Neara risk prioritization case study",
+        "source.neara_pole_replacement_case_study": "Neara pole replacement case study",
+        "source.sce_2025_wmp_update": "SCE 2025 WMP update",
+    }
+    decorated = dict(source)
+    decorated["label"] = labels.get(source_id, source_id)
+    return decorated
+
+
+def _manifest_output(manifest: dict[str, Any], output_id: str) -> dict[str, Any]:
+    for output in manifest.get("outputs", []):
+        if output.get("id") == output_id:
+            return output
+    return {}
+
+
+def _decorate_fact(fact: dict[str, Any], sources: list[dict[str, Any]]) -> dict[str, Any]:
+    source_labels = {source.get("id"): source.get("label", source.get("id", "")) for source in sources}
+    decorated = dict(fact)
+    decorated["lineage_hash"] = hash_data(fact)
+    decorated["source_labels"] = [
+        source_labels.get(source_id, source_id)
+        for source_id in fact.get("source_context_ids", [])
+    ]
+    return decorated
+
+
+def _implementation_detail_cards() -> list[dict[str, Any]]:
+    return [
+        {
+            "id": "detail.asset_inspection_prioritization",
+            "title": "Asset inspection prioritization",
+            "what_changed": "Refreshed risk-model outputs may affect inspection strategy and prioritization.",
+            "who_needs_this": ["Grid Ops", "Customer Success", "Regulatory"],
+            "source_ids": ["source.sce_2025_wmp_update"],
+            "still_unknown": [
+                "Customer-approved inspection schedule",
+                "Field execution owner",
+                "Data handoff path",
+            ],
+            "next_validation_step": "Confirm whether refreshed risk intelligence changes inspection prioritization for the target account.",
+            "trace_status": ["public_source", "source_labeled"],
+            "related_fact_ids": ["fact.sce.risk_model_outputs_affect_workstreams"],
+        },
+        {
+            "id": "detail.vegetation_management_scope",
+            "title": "Vegetation management scope",
+            "what_changed": "Risk outputs may affect vegetation management scope and review attention.",
+            "who_needs_this": ["Grid Ops", "Finance", "Regulatory"],
+            "source_ids": ["source.sce_2025_wmp_update"],
+            "still_unknown": [
+                "Official work order scope",
+                "Crew assumptions",
+                "Approved cost model",
+            ],
+            "next_validation_step": "Identify which operating assumptions are customer-provided versus modeled or synthetic.",
+            "trace_status": ["public_source", "source_labeled", "synthetic_fixture_bounded"],
+            "related_fact_ids": ["fact.sce.risk_model_outputs_affect_workstreams"],
+        },
+        {
+            "id": "detail.system_hardening_schedule",
+            "title": "System hardening schedule",
+            "what_changed": "Risk intelligence may influence hardening scoping or schedules.",
+            "who_needs_this": ["Executive Sponsor", "Finance", "Regulatory", "Implementation Team"],
+            "source_ids": ["source.sce_2025_wmp_update"],
+            "still_unknown": [
+                "Approved capital-plan decision",
+                "Regulatory evidence packet",
+                "Schedule commitment",
+            ],
+            "next_validation_step": "Separate near-term implementation action from multi-year planning implication.",
+            "trace_status": ["public_source", "source_labeled"],
+            "related_fact_ids": ["fact.sce.risk_model_outputs_affect_workstreams"],
+        },
+        {
+            "id": "detail.unsupported_cost_amount",
+            "title": "Unsupported cost amount",
+            "what_changed": "A specific dollar impact was attempted but cannot be supported by the available public sources.",
+            "who_needs_this": ["Finance", "Regulatory", "Customer Success"],
+            "source_ids": ["source.neara_pole_replacement_case_study"],
+            "still_unknown": [
+                "Customer-approved cost model",
+                "Approved labor assumptions",
+                "Budget owner confirmation",
+            ],
+            "next_validation_step": "Reject the cost amount until customer-approved assumptions exist.",
+            "trace_status": ["rejected_assumption", "source_authority_missing"],
+            "related_fact_ids": ["fact.customer.unsupported_specific_cost"],
+        },
+    ]
+
+
 def _audit_summary(proof: dict[str, Any]) -> dict[str, Any]:
     checks = proof["checks"]
     return {
@@ -283,26 +434,27 @@ def _first_excluded_claim(proof: dict[str, Any]) -> str:
 
 
 def render_demo_html(model: dict[str, Any]) -> str:
-    path_items = "".join(f"<li>{_esc(node)}</li>" for node in model["operational_path"])
-    surface_items = "".join(f"<li>{_esc(edge)}</li>" for edge in model["surface_path"])
-    ladder_items = "".join(f"<li>{_esc(step)}</li>" for step in model["story_ladder"])
-    roles = "\n".join(_render_role(role) for role in model["roles"])
     audit_cards = "\n".join(_render_audit(name, proof) for name, proof in model["audit_proofs"].items())
-    value_metrics = "".join(f"<li>{_esc(metric)}</li>" for metric in model["value_story"]["value_metrics"])
     outcome_metrics = "\n".join(_render_outcome_metric(metric) for metric in model["outcome_metrics"])
-    workflow = "\n".join(_render_workflow_step(step) for step in model["workflow"])
-    action_rows = "\n".join(_render_action_option(row) for row in model["action_options"])
-    action_ids = "".join(
-        f"<li>{_esc(row['option'])}: <code>{_esc(row['action_id'])}</code></li>" for row in model["action_options"]
+    source_lookup = {source.get("id"): source for source in model["sources"]}
+    fact_lookup = {fact.get("id"): fact for fact in model["facts"]}
+    implementation_detail_cards = "\n".join(
+        _render_implementation_detail_card(detail, source_lookup, fact_lookup)
+        for detail in model["implementation_details"]
     )
-    output_items = "".join(f"<li>{_esc(item)}</li>" for item in model["output"]["items"])
-    assumptions = "".join(f"<li>{_esc(item)}</li>" for item in model["evidence_status"]["synthetic_assumptions"])
+    public_source_cards = "\n".join(_render_source_card(source) for source in model["public_sources"])
+    synthetic_source_cards = "\n".join(_render_source_card(source) for source in model["synthetic_sources"])
+    bounded_claims = "".join(f"<li>{_esc(claim)}</li>" for claim in model["source_boundary"]["bounded_claims"])
+    fact_cards = "\n".join(_render_fact_card(fact) for fact in model["facts"])
+    stakeholder_cards = "\n".join(_render_stakeholder_card(stakeholder) for stakeholder in model["stakeholder_views"])
     proves = "".join(f"<li>{_esc(item)}</li>" for item in model["proves"])
     out_of_scope = "".join(f"<li>{_esc(item)}</li>" for item in model["out_of_scope"])
     proof_hash_items = "".join(
         f"<li>{_esc(label.replace('_', ' ').title())}: <code>{_esc(proof['proof_hash'])}</code></li>"
         for label, proof in model["audit_proofs"].items()
     )
+    legacy_domain_path = "".join(f"<li>{_esc(node)}</li>" for node in model["operational_path"])
+    legacy_surface_path = "".join(f"<li>{_esc(edge)}</li>" for edge in model["surface_path"])
 
     return f"""<!doctype html>
 <html lang="en">
@@ -313,19 +465,23 @@ def render_demo_html(model: dict[str, Any]) -> str:
   <style>
     :root {{
       color-scheme: light;
-      --ink: #17202a;
-      --muted: #5f6b76;
-      --line: #d9e0e6;
+      --ink: #08171f;
+      --muted: #5b6770;
+      --line: #d9e1db;
       --panel: #ffffff;
-      --wash: #f5f7f9;
-      --accent: #126c5b;
-      --accent-soft: #dcefe9;
-      --warn: #8a4f08;
-      --warn-soft: #fff1d6;
-      --bad: #8b2f2f;
-      --bad-soft: #f9e1df;
-      --blue: #214f7a;
-      --blue-soft: #e1edf7;
+      --wash: #f2f5f2;
+      --accent: #2f7d69;
+      --accent-strong: #1f5f50;
+      --accent-soft: #dff7e8;
+      --signal: #c7ff4f;
+      --signal-soft: #f1ffd2;
+      --blue: #264a73;
+      --blue-soft: #dcefff;
+      --warn: #9a5b13;
+      --warn-soft: #fff3d6;
+      --bad: #9a3412;
+      --bad-soft: #ffe2d5;
+      --dark: #08171f;
     }}
     * {{ box-sizing: border-box; }}
     body {{
@@ -336,7 +492,7 @@ def render_demo_html(model: dict[str, Any]) -> str:
       line-height: 1.45;
     }}
     header, section {{ padding: 28px max(24px, calc((100vw - 1120px) / 2)); }}
-    header {{ background: #10202b; color: white; }}
+    header {{ background: var(--dark); color: white; }}
     h1 {{ margin: 0 0 12px; font-size: clamp(2.2rem, 5vw, 4.8rem); line-height: 1.02; letter-spacing: 0; max-width: 980px; }}
     h2 {{ margin: 0 0 14px; font-size: 1.45rem; letter-spacing: 0; }}
     h3 {{ margin: 0 0 8px; font-size: 1rem; letter-spacing: 0; }}
@@ -347,10 +503,14 @@ def render_demo_html(model: dict[str, Any]) -> str:
     .hero-copy {{ max-width: 900px; font-size: 1.13rem; color: #d9e7ee; }}
     .status-row {{ display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }}
     .pill {{ display: inline-flex; align-items: center; min-height: 28px; border-radius: 999px; padding: 4px 10px; font-size: .84rem; font-weight: 650; background: var(--accent-soft); color: var(--accent); }}
+    .pill-signal {{ background: var(--signal); color: var(--dark); }}
+    .pill-public {{ background: var(--accent-soft); color: var(--accent-strong); }}
+    .pill-synthetic {{ background: #edf0ef; color: var(--muted); }}
     .pill-blue {{ background: var(--blue-soft); color: var(--blue); }}
     .pill-warn {{ background: var(--warn-soft); color: var(--warn); }}
     .pill-bad {{ background: var(--bad-soft); color: var(--bad); }}
-    header .pill {{ background: rgba(255,255,255,.13); color: white; border: 1px solid rgba(255,255,255,.22); }}
+    header .pill {{ background: rgba(255,255,255,.12); color: white; border: 1px solid rgba(255,255,255,.22); }}
+    header .pill-signal {{ background: var(--signal); color: var(--dark); border-color: var(--signal); }}
     .grid {{ display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }}
     .card {{ background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 18px; box-shadow: 0 1px 2px rgba(15, 23, 42, .04); }}
     .notice {{ background: #fffaf0; border: 1px solid #ead5aa; border-radius: 8px; padding: 12px 14px; color: #5e4312; font-size: .94rem; }}
@@ -362,7 +522,8 @@ def render_demo_html(model: dict[str, Any]) -> str:
     .receipt-label {{ color: var(--muted); font-size: .84rem; font-weight: 720; text-transform: uppercase; }}
     .receipt-value {{ margin-top: 8px; font-size: 1.15rem; font-weight: 760; }}
     .metric-strip {{ display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }}
-    .outcome-card {{ background: white; border: 1px solid var(--line); border-radius: 8px; padding: 18px; min-height: 120px; }}
+    .outcome-card {{ display: block; text-decoration: none; color: var(--ink); background: white; border: 1px solid var(--line); border-radius: 8px; padding: 18px; min-height: 120px; transition: border-color .15s ease, transform .15s ease; }}
+    .outcome-card:hover {{ border-color: var(--accent); transform: translateY(-1px); }}
     .outcome-value {{ color: var(--accent); font-size: 2.4rem; line-height: 1; font-weight: 820; margin-bottom: 10px; }}
     .outcome-label {{ color: var(--ink); font-weight: 720; }}
     .io-grid {{ display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); margin-top: 16px; }}
@@ -377,6 +538,21 @@ def render_demo_html(model: dict[str, Any]) -> str:
     .hash {{ overflow-wrap: anywhere; font-size: .82rem; color: var(--muted); }}
     .checks {{ display: grid; gap: 8px; grid-template-columns: repeat(auto-fit, minmax(132px, 1fr)); margin-top: 10px; }}
     .check {{ padding: 8px 10px; border-radius: 8px; background: var(--wash); border: 1px solid var(--line); }}
+    .source-card {{ background: white; border: 1px solid var(--line); border-radius: 8px; padding: 14px; }}
+    .source-public {{ border-color: #b9d9ca; }}
+    .source-synthetic {{ background: #fafbfa; }}
+    .source-card-head {{ display: flex; justify-content: space-between; align-items: start; gap: 12px; }}
+    .source-card h3 {{ margin-bottom: 4px; }}
+    .source-meta {{ display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }}
+    .source-actions {{ display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-top: 12px; }}
+    .source-actions a {{ color: var(--blue); font-weight: 760; text-decoration: none; }}
+    .source-actions a:hover {{ text-decoration: underline; }}
+    .fact-card {{ background: white; border: 1px solid var(--line); border-radius: 8px; padding: 18px; }}
+    .fact-head {{ display: flex; justify-content: space-between; align-items: start; gap: 12px; }}
+    .implementation-card {{ background: white; border: 1px solid var(--line); border-radius: 8px; padding: 20px; min-height: 260px; }}
+    .implementation-card h3 {{ font-size: 1.15rem; }}
+    .implementation-use {{ border-left: 3px solid var(--signal); padding-left: 12px; margin: 14px 0; }}
+    .chips {{ display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }}
     .pass {{ color: var(--accent); font-weight: 700; }}
     .not-applicable {{ color: var(--muted); font-weight: 700; }}
     .warn {{ background: var(--warn-soft); color: var(--warn); }}
@@ -401,10 +577,10 @@ def render_demo_html(model: dict[str, Any]) -> str:
     <h1>{_esc(model["headline"])}</h1>
     <p class="hero-copy">{_esc(model["subhead"])}</p>
     <div class="status-row">
-      <span class="pill">Synthetic demo</span>
-      <span class="pill">Hash-backed</span>
-      <span class="pill">No model replacement</span>
-      <span class="pill">Source authority pending</span>
+      <span class="pill pill-public">Public-source context</span>
+      <span class="pill pill-synthetic">Synthetic fixture bounded</span>
+      <span class="pill">No RVO replacement</span>
+      <span class="pill pill-signal">Audit proof available</span>
     </div>
   </header>
 
@@ -412,18 +588,45 @@ def render_demo_html(model: dict[str, Any]) -> str:
     <div class="metric-strip">{outcome_metrics}</div>
   </section>
 
+  <section id="implementation-details">
+    <h2>Implementation details surfaced from broad intelligence</h2>
+    <p class="muted">Each card is a customer-specific detail that an implementation team would need to validate, explain, or hand off.</p>
+    <div class="grid">{implementation_detail_cards}</div>
+  </section>
+
   <section>
     <div class="notice">{_esc(model["trust_banner"])}</div>
   </section>
 
-  <section>
+  <section id="source-boundary">
+    <h2>Source boundary</h2>
+    <p class="muted">Public-source grounded context shapes the implementation story. The synthetic fixture supplies the 72-watch-point count, and the unsupported cost assumption is rejected rather than treated as source-backed fact.</p>
+    <p class="muted">Status: {_esc(model["source_status"])}</p>
+    <div class="grid">
+      <div class="card">
+        <h3>Public context sources</h3>
+        <div class="grid">{public_source_cards}</div>
+      </div>
+      <div class="card">
+        <h3>Synthetic fixture</h3>
+        <div class="grid">{synthetic_source_cards}</div>
+      </div>
+      <div class="card">
+        <h3>Boundary notes</h3>
+        <p class="muted">{_esc(model["source_boundary"]["status"])}</p>
+        <ul>{bounded_claims}</ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="decision-summary">
     <div class="receipt">
       <div class="receipt-head">
         <div>
           <h2 class="receipt-title">Decision Summary</h2>
-          <p class="muted">A technical model output becomes a customer-facing decision: what changed, why it matters, what action is allowed, and what proof supports it.</p>
+          <p class="muted">Broad intelligence becomes customer-specific significance: what changed, who cares, what evidence is trusted, what assumptions are rejected, and what action is defensible.</p>
         </div>
-        <span class="pill pill-blue">{_esc(model["decision_summary"]["trust_status"])}</span>
+        <span class="pill pill-signal">{_esc(model["decision_summary"]["trust_status"])}</span>
       </div>
       <div class="receipt-grid">
         <div class="receipt-item">
@@ -447,134 +650,60 @@ def render_demo_html(model: dict[str, Any]) -> str:
           <div class="receipt-value">{_esc(model["decision_summary"]["trust_status"])}</div>
         </div>
       </div>
-      <div class="io-grid">
-        <div class="io-card">
-          <h2>Input</h2>
-          <p class="muted">{_esc(model["input_model_delta"]["type"])}</p>
-        <div class="metric">{_esc(str(model["input_model_delta"]["value"]))}</div>
-        <p><strong>{_esc(model["input_model_delta"]["unit"].replace("_", " "))}</strong></p>
-          <p>Source: <code>{_esc(model["input_model_delta"]["source_observation"])}</code></p>
-          <p>Status: {_esc(model["input_model_delta"]["trust"])}</p>
-        <span class="pill">source: {_esc(model["input_model_delta"]["source_observation"])}</span>
-        <span class="pill">{_esc(model["input_model_delta"]["trust"])}</span>
-      </div>
-        <div class="io-card">
-          <h2>Output</h2>
-          <div class="metric-text">{_esc(model["output"]["title"])}</div>
-          <ul>{output_items}</ul>
-          <span class="pill">Generate work packet</span>
-          <span class="pill">Customer value story</span>
-        </div>
-      </div>
     </div>
   </section>
 
-  <section>
-    <h2>CVA decision workflow</h2>
-    <div class="workflow">{workflow}</div>
+  <section id="stakeholder-questions">
+    <h2>Stakeholder questions</h2>
+    <p class="muted">The same intelligence creates different questions depending on who needs to act, defend, fund, or implement.</p>
+    <div class="grid">{stakeholder_cards}</div>
   </section>
 
-  <section>
-    <h2>Action Options</h2>
-    <table>
-      <thead>
-        <tr>
-          <th>Option</th>
-          <th>Customer purpose</th>
-          <th>Status</th>
-          <th>Trust note</th>
-        </tr>
-      </thead>
-      <tbody>{action_rows}</tbody>
-    </table>
-    <details>
-      <summary>Show action IDs</summary>
-      <ul>{action_ids}</ul>
-    </details>
+  <section id="facts">
+    <h2>Trace evidence behind the implementation details</h2>
+    <p class="muted">These are the source-backed or rejected claims that support the implementation-detail cards above.</p>
+    <div class="grid">{fact_cards}</div>
   </section>
 
-  <section>
-    <h2>How the model output becomes customer value</h2>
-    <p class="muted">{_esc(model["operational_explanation"])}</p>
-    <ol class="ladder">{ladder_items}</ol>
-    <details>
-      <summary>Show technical trace</summary>
-      <div class="grid">
-        <div class="card">
-          <h3>Customer meaning path</h3>
-          <p class="muted">Domain node IDs preserved for auditability.</p>
-          <ol>{path_items}</ol>
-        </div>
-        <div class="card">
-          <h3>Audit edge path</h3>
-          <p class="muted">Surface edge IDs preserved for auditability.</p>
-          <ol>{surface_items}</ol>
-        </div>
-      </div>
-    </details>
-  </section>
-
-  <section>
-    <h2>Stakeholder Views</h2>
-    <div class="grid">{roles}</div>
-  </section>
-
-  <section>
-    <h2>Why it matters</h2>
-    <div class="card">
-      <h3>Customer value</h3>
-      <p>{_esc(model["value_story"]["because"])}</p>
-      <ul>{value_metrics}</ul>
-    </div>
-  </section>
-
-  <section>
+  <section id="decision-confidence">
     <h2>Decision Confidence</h2>
     <div class="grid">
       <div class="card">
-        <h3>Included claim</h3>
-        <p><code>{_esc(model["evidence_status"]["admitted_claim"]["id"])}</code></p>
-        <p>{_esc(model["evidence_status"]["admitted_claim"]["claim"])}</p>
-        <span class="pill">Included</span>
-        <span class="pill">Hash-backed</span>
-        <span class="pill">{_esc(model["evidence_status"]["admitted_claim"]["trust"])}</span>
+        <h3>Public context included</h3>
+        <p>Neara RVO framing and SCE wildfire-planning context remain visible as source-bounded context.</p>
+        <span class="pill pill-public">Included</span>
       </div>
       <div class="card">
-        <h3>Rejected assumption</h3>
-        <p><code>{_esc(model["evidence_status"]["rejected_claim"]["id"])}</code></p>
-        <p>{_esc(model["evidence_status"]["rejected_claim"]["claim"])}</p>
-        <span class="pill pill-bad">Rejected</span>
-        <span class="pill pill-warn">Source authority pending</span>
+        <h3>Unsupported cost rejected</h3>
+        <p>Specific cost impact is rejected unless customer-approved cost evidence exists.</p>
+        <span class="pill pill-bad">Rejected assumption</span>
       </div>
       <div class="card">
-        <h3>Demo assumptions</h3>
-        <ul>{assumptions}</ul>
-        <span class="pill pill-warn">Synthetic</span>
+        <h3>Next action allowed</h3>
+        <p>Generate implementation context trace is the source-bounded next action.</p>
+        <span class="pill pill-signal">Allowed</span>
       </div>
     </div>
   </section>
 
-  <section>
-    <h2>Can this decision be defended?</h2>
+  <section id="audit-proof">
+    <h2>Can this be defended?</h2>
+    <p class="muted">Yes: the trace separates public-source context, synthetic fixture data, rejected assumptions, and allowed next action.</p>
     <div class="grid">
       <div class="card">
-        <h3>Included</h3>
-        <p>72 vegetation watch points</p>
-        <span class="pill">Included</span>
+        <h3>Public context included</h3>
+        <span class="pill pill-public">Included</span>
       </div>
       <div class="card">
-        <h3>Rejected</h3>
-        <p>Unsupported $999,999 cost assumption</p>
+        <h3>Unsupported cost rejected</h3>
         <span class="pill pill-bad">Rejected</span>
       </div>
       <div class="card">
-        <h3>Allowed</h3>
-        <p>Generate work packet</p>
-        <span class="pill">Allowed</span>
+        <h3>Next action allowed</h3>
+        <span class="pill pill-signal">Allowed</span>
       </div>
       <div class="card">
-        <h3>Proof</h3>
-        <p>Audit checks passed</p>
+        <h3>Proof hash available</h3>
         <span class="pill pill-blue">Audit proof available</span>
       </div>
     </div>
@@ -585,24 +714,48 @@ def render_demo_html(model: dict[str, Any]) -> str:
       <ul>{proof_hash_items}</ul>
     </details>
     <details>
-      <summary>Show raw JSON</summary>
+      <summary>Show raw audit JSON</summary>
       <pre>{_esc(json.dumps(model["audit_proofs"], indent=2, sort_keys=True))}</pre>
     </details>
   </section>
 
+  <section id="legacy-fixture">
+    <details>
+      <summary>Legacy synthetic fixture</summary>
+      <p class="muted">The original 72-watch-point fixture is retained only to exercise Corus admission, validation, permissioning, and audit behavior. It is no longer the central demo event.</p>
+      <div class="grid">
+        <div class="card">
+          <h3>Legacy input</h3>
+          <p>{_esc(model["input_model_delta"]["claim"])}</p>
+          <span class="pill pill-synthetic">{_esc(model["input_model_delta"]["trust"])}</span>
+        </div>
+        <div class="card">
+          <h3>Customer meaning path</h3>
+          <ol>{legacy_domain_path}</ol>
+        </div>
+        <div class="card">
+          <h3>Audit edge path</h3>
+          <ol>{legacy_surface_path}</ol>
+        </div>
+      </div>
+    </details>
+  </section>
+
   <section>
-    <h2>What this demo proves</h2>
-    <div class="split">
-      <div class="card">
-        <h3>What this proves</h3>
-        <ul>{proves}</ul>
+    <details>
+      <summary>Scope and proof notes</summary>
+      <div class="split">
+        <div class="card">
+          <h3>What this demo proves</h3>
+          <ul>{proves}</ul>
+        </div>
+        <div class="card">
+          <h3>Out of scope</h3>
+          <p class="muted">{_esc(model["trust_banner"])}</p>
+          <ul>{out_of_scope}</ul>
+        </div>
       </div>
-      <div class="card">
-        <h3>Out of scope</h3>
-        <p class="muted">{_esc(model["trust_banner"])}</p>
-        <ul>{out_of_scope}</ul>
-      </div>
-    </div>
+    </details>
   </section>
   <footer>Generated from existing <code>python -m corus</code> JSON commands.</footer>
 </body>
@@ -611,21 +764,78 @@ def render_demo_html(model: dict[str, Any]) -> str:
 
 
 def _render_outcome_metric(metric: dict[str, str]) -> str:
+    href = _metric_href(metric)
     return f"""
-<div class="outcome-card">
+<a class="outcome-card" href="{_esc(href)}">
   <div class="outcome-value">{_esc(metric["value"])}</div>
   <div class="outcome-label">{_esc(metric["label"])}</div>
-</div>
+</a>
 """
 
 
-def _render_workflow_step(step: dict[str, str]) -> str:
+def _metric_href(metric: dict[str, str]) -> str:
+    value = str(metric.get("value", "")).lower()
+    label = str(metric.get("label", "")).lower()
+    if "public" in value or "source" in label:
+        return "#source-boundary"
+    if "workstream" in label:
+        return "#implementation-details"
+    if "stakeholder" in label:
+        return "#stakeholder-questions"
+    if "rejected" in label:
+        return "#implementation-details"
+    if "audit" in value or "proof" in label:
+        return "#decision-confidence"
+    return "#decision-summary"
+
+
+def _render_implementation_detail_card(
+    detail: dict[str, Any],
+    source_lookup: dict[str, dict[str, Any]],
+    fact_lookup: dict[str, dict[str, Any]],
+) -> str:
+    who = " · ".join(_esc(item) for item in detail.get("who_needs_this", []))
+    trace = "".join(_render_trust_pill(status) for status in detail.get("trace_status", []))
+    sources = [
+        source_lookup.get(source_id, {"id": source_id, "label": source_id})
+        for source_id in detail.get("source_ids", [])
+    ]
+    source_links = "".join(_render_compact_source_link(source) for source in sources)
+    source_ids = "".join(f"<li><code>{_esc(source_id)}</code></li>" for source_id in detail.get("source_ids", []))
+    unknowns = "".join(f"<li>{_esc(item)}</li>" for item in detail.get("still_unknown", []))
+    related_facts = [fact_lookup.get(fact_id) for fact_id in detail.get("related_fact_ids", []) if fact_lookup.get(fact_id)]
+    related_fact_items = "".join(
+        f"<li><code>{_esc(fact.get('id'))}</code>: {_esc(fact.get('claim'))}</li>"
+        for fact in related_facts
+    )
+    lineage_hashes = "".join(
+        f"<li><code>{_esc(fact.get('lineage_hash'))}</code></li>"
+        for fact in related_facts
+        if fact.get("lineage_hash")
+    )
     return f"""
-<div class="workflow-step">
-  <div class="step-number">{_esc(step["step"])}</div>
-  <h3>{_esc(step["title"])}</h3>
-  <p>{_esc(step["body"])}</p>
-</div>
+<article class="implementation-card">
+  <h3>{_esc(detail["title"])}</h3>
+  <div class="chips">{trace}</div>
+  <p><strong>What changed:</strong><br>{_esc(detail["what_changed"])}</p>
+  <p><strong>Who needs this:</strong><br>{who}</p>
+  <p><strong>Next validation step:</strong><br>{_esc(detail["next_validation_step"])}</p>
+  <details>
+    <summary>Show source and implementation details</summary>
+    <p>Sources</p>
+    <div class="chips">{source_links}</div>
+    <p>Still unknown</p>
+    <ul>{unknowns}</ul>
+    <p>Source IDs</p>
+    <ul>{source_ids}</ul>
+    <p>Related facts</p>
+    <ul>{related_fact_items}</ul>
+    <p>Trace status</p>
+    <div class="chips">{trace}</div>
+    <p>Lineage hashes</p>
+    <ul class="hash">{lineage_hashes}</ul>
+  </details>
+</article>
 """
 
 
@@ -638,6 +848,146 @@ def _render_action_option(row: dict[str, str]) -> str:
   <td>{_esc(row["trust"])}</td>
 </tr>
 """
+
+
+def _render_source_card(source: dict[str, Any]) -> str:
+    statuses = "".join(_render_trust_pill(status) for status in source.get("trust_status", []))
+    url = source.get("url")
+    source_class = "source-public" if "public_source" in source.get("trust_status", []) else "source-synthetic"
+    source_link = (
+        f"<a href=\"{_esc(url)}\" target=\"_blank\" rel=\"noreferrer\">Open source</a>"
+        if url
+        else "<span class=\"muted\">Internal fixture</span>"
+    )
+    supports = list(source.get("supports", []))
+    limits = list(source.get("limits", []))
+    support_sentence = supports[0] if supports else source.get("trust_note", "Source context is declared for this demo.")
+    support_items = "".join(f"<li>{_esc(item)}</li>" for item in supports)
+    limit_items = "".join(f"<li>{_esc(item)}</li>" for item in limits)
+    public_pill = (
+        "<span class=\"pill pill-public\">Public source</span>"
+        if "public_source" in source.get("trust_status", [])
+        else "<span class=\"pill pill-synthetic\">Synthetic fixture</span>"
+    )
+    return f"""
+<article class="source-card {source_class}">
+  <div class="source-card-head">
+    <h3>{_esc(source.get("label", source.get("id", "source")))}</h3>
+    {public_pill}
+  </div>
+  <p>{_esc(support_sentence)}</p>
+  <div class="source-meta">{statuses}</div>
+  <div class="source-actions">
+    {source_link}
+    <details>
+      <summary>Show evidence details</summary>
+      <p>Source ID: <code>{_esc(source.get("id", ""))}</code></p>
+      <p>Kind: {_esc(source.get("kind", ""))}</p>
+      <p>Authority: {_esc(source.get("authority", "source authority missing"))}</p>
+      <p>Source status: {_esc(source.get("source_status", "unknown"))}</p>
+      <p class="hash">URL: {_esc(url or "not applicable")}</p>
+      <p>Trust status</p>
+      <div class="chips">{statuses}</div>
+      <p>Supports</p>
+      <ul>{support_items}</ul>
+      <p>Limits</p>
+      <ul>{limit_items}</ul>
+    </details>
+  </div>
+</article>
+"""
+
+
+def _render_compact_source_link(source: dict[str, Any]) -> str:
+    label = _esc(source.get("label", source.get("id", "source")))
+    url = source.get("url")
+    if url:
+        return f"<a class='pill pill-public' href='{_esc(url)}' target='_blank' rel='noreferrer'>{label}</a>"
+    return f"<span class='pill pill-synthetic'>{label}</span>"
+
+
+def _render_fact_card(fact: dict[str, Any]) -> str:
+    statuses = "".join(_render_trust_pill(status) for status in fact.get("trust_status", []))
+    sources = "".join(
+        f"<span class='pill pill-public'>{_esc(label)}</span>"
+        for label in fact.get("source_labels", [])
+    )
+    title = str(fact.get("id", "fact")).replace("fact.", "").replace(".", " ").replace("_", " ").title()
+    trace = {
+        "fact_id": fact.get("id"),
+        "source_context_ids": fact.get("source_context_ids", []),
+        "supports_domain_node": fact.get("supports_domain_node"),
+        "trust_note": fact.get("trust_note"),
+        "lineage_hash": fact.get("lineage_hash"),
+    }
+    return f"""
+<article class="fact-card">
+  <div class="fact-head">
+    <h3>{_esc(title)}</h3>
+    <div>{statuses}</div>
+  </div>
+  <p>{_esc(fact.get("claim", ""))}</p>
+  <p class="muted">{_esc(_fact_meaning(fact))}</p>
+  <div class="chips">{sources}</div>
+  <details>
+    <summary>Show trace</summary>
+    <pre>{_esc(json.dumps(trace, indent=2, sort_keys=True))}</pre>
+  </details>
+</article>
+"""
+
+
+def _fact_meaning(fact: dict[str, Any]) -> str:
+    meanings = {
+        "fact.customer.needs_significance": "This is the root implementation question. It explains why the page starts after intelligence exists.",
+        "fact.rvo.intelligence_exists": "This grounds the broad intelligence side of the demo.",
+        "fact.sce.risk_model_outputs_affect_workstreams": "This grounds the affected-workstream implementation-detail cards.",
+        "fact.customer.unsupported_specific_cost": "This explains why the cost claim is rejected rather than rendered as customer value.",
+        "fact.corus.situated_significance": "This is the Corus output: a customer-specific reason for action with source boundaries attached.",
+    }
+    return meanings.get(str(fact.get("id")), "This source-backed trace supports the implementation-detail cards above.")
+
+
+def _render_workstream_card(workstream: dict[str, str]) -> str:
+    return f"""
+<div class="card">
+  <h3>{_esc(workstream["title"])}</h3>
+  <p><strong>What changes?</strong><br>{_esc(workstream["changes"])}</p>
+  <p><strong>What evidence is needed?</strong><br>{_esc(workstream["evidence"])}</p>
+  <p><strong>What is still unknown?</strong><br>{_esc(workstream["unknown"])}</p>
+</div>
+"""
+
+
+def _render_stakeholder_card(stakeholder: dict[str, Any]) -> str:
+    needs = "".join(f"<li>{_esc(item)}</li>" for item in stakeholder.get("needs", []))
+    receives = "".join(f"<li>{_esc(item)}</li>" for item in stakeholder.get("receives", []))
+    return f"""
+<article class="card">
+  <h3>{_esc(stakeholder.get("label", stakeholder.get("id", "Stakeholder")))}</h3>
+  <p><strong>{_esc(stakeholder.get("core_question", ""))}</strong></p>
+  <p class="muted">Needs</p>
+  <ul>{needs}</ul>
+  <details>
+    <summary>Show stakeholder details</summary>
+    <p>Receives</p>
+    <ul>{receives}</ul>
+  </details>
+</article>
+"""
+
+
+def _render_trust_pill(status: str) -> str:
+    css = "pill-public"
+    if status in {"demo_synthetic", "demo_interpretation"}:
+        css = "pill-synthetic"
+    elif status == "rejected_assumption":
+        css = "pill-bad"
+    elif status == "source_authority_missing":
+        css = "pill-warn"
+    elif status == "internally_hash_backed":
+        css = "pill-blue"
+    return f"<span class='pill {css}'>{_esc(status)}</span>"
 
 
 def _render_role(role: dict[str, Any]) -> str:

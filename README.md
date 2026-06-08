@@ -1,96 +1,71 @@
 # Corus Workbench
 
-Corus is a local context OS.
+Corus is a context orchestration engine.
+
+Artifacts have commit histories. Contexts have moment histories.
 
 ```txt
-timpo/   anchors observations and is Mojo-first.
-kernel/  executes programs and processes.
-fs/      preserves protocols, programs, processes, evidence, inputs, and ledgers.
+Commit = artifact history
+Moment = context history
+Context = derived from linked moments
 ```
 
-Timpo is the primitive observation layer below the kernel/filesystem split.
+Corus helps an orchestrator understand which contracts are in scope, which artifacts are expected, what has changed, and whether the context is ready, blocked, or unresolved.
+
+## Core Model
+
+A contract has one owner, one focus, one artifact, and one state.
+
+A commit records a durable state change to an artifact.
+
+A moment records how a subject enters context through an initiator's orientation.
 
 ```txt
-Timpo = when + where
-Timpo + Domain = Context
+Orchestrator
+  -> derived Context
+    -> Contracts
+      -> Artifact + State
+        -> Commits
+          -> Moments
 ```
 
-Kernel acts. FS preserves.
-
-## Architecture
-
-Process = FP.
-Program = OS.
-Protocol = immutable contract.
-
-Processes are functional. Programs are operational. Protocols are immutable.
-
-The kernel can:
-- transform
-- run
-- connect
-- verify
-- command
-
-The filesystem preserves:
-- protocols
-- programs
-- processes
-- evidence
-- inputs
-- ledgers
-
-Timpo anchors observation.
-Domain reconstructs meaning.
-Context is reconstructed significance.
-Surface exposes context.
-Profile assigns attention.
-Value defines why the customer cares.
-Legacy preserves reconstruction capability through time.
+The smallest atom of context is a moment:
 
 ```txt
-Context + Surface = Interface candidate.
-Interface candidate + Profile = Rendered experience.
-Rendered experience + Value = Customer significance.
+Moment = timpo + initiator + orientation + subject + previous
 ```
 
-## Contracts
+The engine keeps these boundaries:
 
-The extension names the contract. YAML carries the contract.
+- `Artifact`: durable proof/output object expected by a contract.
+- `Commit`: durable state change to an artifact.
+- `Moment`: contextual occurrence linked to prior moment(s).
+- `Context`: derived chain/graph of moments around an orchestrated subject.
+- `Contract`: measurable unit of responsibility.
+- `Profile`: initiator that orients a moment.
 
-`.domain` = meaning contract.
-`.surface` = context display contract.
-`.profile` = attention/rendering/governance contract.
-`.value` = customer value contract.
-`.program` = reusable workflow contract.
-`.process` = reusable step contract.
-`.timpos` = input collection of Timpo observations.
-`.ledger` = append-only retained Timpo observation history.
+## Neara V0 Demo
 
-A recorded `.process/` directory under `fs/03_processes/runs/` means the program did run and was recorded.
+The Neara v0 fixture shows RVO entering a Director-orchestrated account context. CVA and FDE contracts become visible inside that context, expected artifacts are identified, and alignment remains unresolved until those artifacts exist.
 
-## SCE Demo
+Run:
 
-The first runnable program is:
+```bash
+python -m corus moment tests/fixtures/neara_moment_v0
+```
+
+The default fixture has no commits, so it proves:
 
 ```txt
-fs/02_programs/sce-vegetation-workforce.program
+RVO enters a Director-orchestrated account context.
+CVA and FDE role contracts are visible.
+Each contract has one artifact.
+Expected artifacts are missing.
+Neara alignment is unresolved.
+Customer adoption is unresolved.
 ```
 
-It converts:
-
-```txt
-Neara-style vegetation model output
-+
-SCE workforce/labor/money customer constraints
--> Corus .value
--> computed workforce/labor/money value result
--> recorded process run
-```
-
-Neara brings what changed in the network.
-SCE brings what matters operationally.
-Corus generates `.value`.
+If commits later set the required artifacts to `present`, Corus can resolve the corresponding state.
 
 ## Quickstart
 
@@ -98,15 +73,9 @@ Corus generates `.value`.
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -e .
-corus fs mount
-corus protocol validate
-corus program list
-corus program run sce-vegetation-workforce
-corus process inspect latest
+python -m corus moment tests/fixtures/neara_moment_v0
 ```
 
-Everything in the repo supports this:
+## Keeper
 
-```txt
-Corus preserves the discernment required to reconstruct context from observations.
-```
+Commits are artifact history. Moments are context history. Context is derived from linked moments.

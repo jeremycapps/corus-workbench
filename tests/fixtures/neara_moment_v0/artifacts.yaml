@@ -1,0 +1,24 @@
+artifacts:
+  - id: artifact.value_evidence
+    current_state: expected_missing
+    latest_commit: null
+
+  - id: artifact.roi_case
+    current_state: expected_missing
+    latest_commit: null
+
+  - id: artifact.technical_evidence
+    current_state: expected_missing
+    latest_commit: null
+
+  - id: artifact.integration_path
+    current_state: expected_missing
+    latest_commit: null
+
+  - id: artifact.customer_sponsor_acceptance
+    current_state: expected_missing
+    latest_commit: null
+
+  - id: artifact.customer_technical_acceptance
+    current_state: expected_missing
+    latest_commit: null

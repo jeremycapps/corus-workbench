@@ -16,6 +16,7 @@ from kernel.ledger.read import read_active_context
 from kernel.ledger.store import LedgerStore, validate_payload
 from kernel.lens.loader import load_lens
 from kernel.lens.validate import validate_lens
+from kernel.moment_runtime import resolve_moment_runtime
 from kernel.profile.loader import load_profile
 from kernel.profile.validate import validate_profile
 from kernel.source import add_source
@@ -1025,6 +1026,8 @@ def build_parser() -> argparse.ArgumentParser:
     agent.add_argument("--profile")
     agent.add_argument("--lens")
     agent.add_argument("--json", action="store_true", help="Print JSON output.")
+    moment = sub.add_parser("moment")
+    moment.add_argument("fixture", type=Path)
     return parser
 
 
@@ -1045,6 +1048,9 @@ def main(argv: list[str] | None = None) -> None:
         raise SystemExit(f"unknown source command {args.source_command}")
     if args.command == "diff":
         print_output(command_diff(args.fixture), as_json)
+        return
+    if args.command == "moment":
+        print(json.dumps(resolve_moment_runtime(args.fixture), indent=2, sort_keys=True))
         return
     bundle = load_bundle(args.fixture)
     if args.command == "validate":

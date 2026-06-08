@@ -1,0 +1,12 @@
+states:
+  - id: state.neara_alignment
+    requires:
+      - artifact.value_evidence
+      - artifact.roi_case
+      - artifact.technical_evidence
+      - artifact.integration_path
+
+  - id: state.customer_adoption
+    requires:
+      - artifact.customer_sponsor_acceptance
+      - artifact.customer_technical_acceptance

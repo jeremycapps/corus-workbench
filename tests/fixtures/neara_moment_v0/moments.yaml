@@ -1,0 +1,46 @@
+moments:
+  - id: moment.001
+    timpo: timpo.demo.rvo_enters_account_context
+    initiator: profile.neara_director_customer_implementation
+    orientation: orchestrate.account_context
+    subject: source.neara_rvo
+    previous: null
+
+  - id: moment.002
+    timpo: timpo.demo.cva_value_evidence_expected
+    initiator: profile.neara_cva
+    orientation: contract.cva.value_evidence
+    subject: artifact.value_evidence
+    previous: moment.001
+
+  - id: moment.003
+    timpo: timpo.demo.cva_roi_case_expected
+    initiator: profile.neara_cva
+    orientation: contract.cva.roi_case
+    subject: artifact.roi_case
+    previous: moment.001
+
+  - id: moment.004
+    timpo: timpo.demo.fde_technical_evidence_expected
+    initiator: profile.neara_fde
+    orientation: contract.fde.technical_evidence
+    subject: artifact.technical_evidence
+    previous: moment.001
+
+  - id: moment.005
+    timpo: timpo.demo.fde_integration_path_expected
+    initiator: profile.neara_fde
+    orientation: contract.fde.integration_path
+    subject: artifact.integration_path
+    previous: moment.001
+
+  - id: moment.006
+    timpo: timpo.demo.context_state_resolution
+    initiator: profile.corus_resolver
+    orientation: resolve.context_state
+    subject: state.neara_alignment
+    previous:
+      - moment.002
+      - moment.003
+      - moment.004
+      - moment.005

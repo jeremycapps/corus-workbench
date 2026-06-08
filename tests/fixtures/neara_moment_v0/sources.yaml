@@ -1,0 +1,20 @@
+sources:
+  - id: source.neara_rvo
+    type: product_source
+    label: Neara RVO source
+    status: present
+
+  - id: source.neara_cva_job_description
+    type: role_source
+    label: Neara CVA job description
+    status: present
+
+  - id: source.jack_curtis_cva_hiring_post
+    type: hiring_signal
+    label: Jack Curtis CVA hiring post
+    status: present
+
+  - id: source.neara_fde_job_description
+    type: role_source
+    label: Neara FDE job description
+    status: present
